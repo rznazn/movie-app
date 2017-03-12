@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -122,12 +121,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
             Context context = v.getContext();
             int id = getAdapterPosition();
-            /**
-             * TODO remove this Toast message it is only here for development use
-             */
-            Toast.makeText(context, "click" + id, Toast.LENGTH_LONG).show();
             MovieTagObject currentMovie = mMovieTagObjects.get(id);
-
             String overViewTextViewData = "Release date: " + currentMovie.getReleaseDate()
                     + "\n" + "Voter Average: " + currentMovie.getVoterAverage()
                     + "\n" + "Plot:" + "\n"+ currentMovie.getOverview();

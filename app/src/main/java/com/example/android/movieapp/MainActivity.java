@@ -72,12 +72,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemSelected){
             case R.id.action_sort_by_popular:
                 sortPreference = "popular";
+                new GetMoviesTask().execute(sortPreference);
                 break;
             case R.id.action_sort_by_highest_rated:
                 sortPreference = "top_rated";
-                break;
-            case R.id.test_button:
                 new GetMoviesTask().execute(sortPreference);
+                break;
         }
         return true;
     }
