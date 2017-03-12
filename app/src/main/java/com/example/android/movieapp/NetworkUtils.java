@@ -63,7 +63,7 @@ public class NetworkUtils {
         return url;
     }
 
-    public static Uri buildImageResUrl(String imagePath) throws URISyntaxException {
+    public static Uri buildImageResUri(String imagePath) throws URISyntaxException {
         String queryUrl = "https://image.tmdb.org/t/p/w500" + imagePath;
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)

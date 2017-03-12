@@ -66,6 +66,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return true;
     }
 
+    /**
+     * Select the sortBy Preference and refresh the layout
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
@@ -91,7 +96,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
          */
     }
 
-
+    /**
+     * Async Task the makes network request to get movie data
+     */
     public class GetMoviesTask extends AsyncTask<String, Void, String> {
 
         @Override
