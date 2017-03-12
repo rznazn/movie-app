@@ -5,8 +5,14 @@
 
     <ImageView
         android:id="@+id/iv_grid_item"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:src="@drawable/ic_done_black_24dp"/>
+    <TextView
+        android:id="@+id/tv_grid_item"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:text="movieTitle"/>
 
 </LinearLayout>

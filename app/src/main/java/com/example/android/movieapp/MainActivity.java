@@ -1,44 +1,65 @@
 package com.example.android.movieapp;
 
-import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+
+import org.json.JSONException;
+
+import java.net.URL;
+import java.util.ArrayList;
+
+/**
+ * Application Main Activity
+ */
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
+    /**
+     * Variables for use in handling the UI layouts/views/layout manager/adapter
+     */
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
-    private int spanCount = 3;
+    private int spanCount = 2;
+    private  ArrayList<MovieTagObject> mMovieTagObjects = null;
+
+    /**
+     * Variable to be used in determining the sort order for the search
+     */
+    public static String sortPreference = "popular";
+    public static String response = "failed";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
+         * instantiate variables and assign layout manager and adapter.
+         */
+        new GetMoviesTask().execute(sortPreference);
         mLayoutManager = new GridLayoutManager(this, spanCount
         , GridLayoutManager.VERTICAL, false);
-
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
-
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        mRecyclerView.setHasFixedSize(true);
-
-        mMovieAdapter = new MovieAdapter(this);
-
+        mRecyclerView.setHasFixedSize(false);
+        mMovieAdapter = new MovieAdapter(this,mMovieTagObjects);
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
+    /**
+     * inflate options menu with the options for sorting by popularity or ranking
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = new MenuInflater(this);
@@ -51,11 +72,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemSelected = item.getItemId();
         switch (itemSelected){
             case R.id.action_sort_by_popular:
-                Toast.makeText(this, "popular", Toast.LENGTH_LONG).show();
+                sortPreference = "popular";
                 break;
             case R.id.action_sort_by_highest_rated:
-                Toast.makeText(this, "high rated", Toast.LENGTH_LONG).show();
+                sortPreference = "top_rated";
                 break;
+            case R.id.test_button:
+                new GetMoviesTask().execute(sortPreference);
         }
         return true;
     }
@@ -63,26 +86,47 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public void onClick(View v) {
-        Toast.makeText(this, "click", Toast.LENGTH_LONG).show();
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        LayoutInflater inflater = getLayoutInflater();
-        final  View displayView = inflater.inflate(R.layout.detail_layout, null);
-        builder.setView(displayView);
-        builder.setMessage("test message");
-        builder.setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                return;
-            }
-        });
 
-        AlertDialog ad = builder.create();
-        ad.show();
-
-
+        /**
+         * This method is defined in the MovieAdapter class
+         */
     }
 
 
+    public class GetMoviesTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+           if (params.length == 0) {
+                return null;
+            }
+
+            String sortBy = params[0];
+            URL movieUrl = NetworkUtils.buildUrl(sortBy);
+
+            try {
+                response = NetworkUtils
+                        .getResponseFromHttpUrl(movieUrl);
+
+                return response;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+                mMovieTagObjects = MovieDBJsonUtils.translateStringToArrayList(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mMovieAdapter.setMovieData(mMovieTagObjects);
+        }
+    }
 
 
 }

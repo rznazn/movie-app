@@ -13,5 +13,10 @@
         android:title="@string/highest_rated"
         android:orderInCategory="2"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/test_button"
+        android:title="Test"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"/>
 
 </menu>
