@@ -2,6 +2,7 @@ package com.example.android.movieapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -126,6 +127,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
              */
             Toast.makeText(context, "click" + id, Toast.LENGTH_LONG).show();
             MovieTagObject currentMovie = mMovieTagObjects.get(id);
+
+            String overViewTextViewData = "Release date: " + currentMovie.getReleaseDate()
+                    + "\n" + "Voter Average: " + currentMovie.getVoterAverage()
+                    + "\n" + "Plot:" + "\n"+ currentMovie.getOverview();
             /**
              * This AlertDialog will display the movie details
              */
@@ -133,7 +138,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             LayoutInflater inflater = LayoutInflater.from(context);
             final View displayView = inflater.inflate(R.layout.detail_layout, null);
             final TextView movieOverview= (TextView) displayView.findViewById(R.id.tv_movie_detail);
-            movieOverview.setText(currentMovie.getOverview());
+            final ImageView posterView = (ImageView) v.findViewById(R.id.iv_grid_item);
+            Drawable poster = posterView.getDrawable();
+            displayView.setBackground(poster);
+            float visibility = .25f;
+            displayView.setAlpha(visibility);
+
+            movieOverview.setText(overViewTextViewData);
             builder.setView(displayView);
             builder.setMessage(currentMovie.getTitle());
             builder.setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {

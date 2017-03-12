@@ -29,8 +29,10 @@ public class MovieDBJsonUtils {
             String title = object.getString("original_title");
             String overview = object.getString("overview");
             String imagePath = object.getString("poster_path");
+            String releaseDate = object.getString("release_date");
+            String voterAverage = object.getString("vote_average");
 
-            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath));
+            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
 
         }
         return movieTagObjects;

@@ -9,12 +9,17 @@ public class MovieTagObject extends Object{
     private String mTitle;
     private String mOverview;
     private String mImagePath;
+    private String mReleaseDate;
+    private String mVoterAverage;
 
-    public MovieTagObject(String id, String title, String overview, String imagePath){
+    public MovieTagObject(String id, String title, String overview, String imagePath, String releaseDate,
+                          String voterAverage){
         mId = id;
         mTitle = title;
         mOverview = overview;
         mImagePath = imagePath;
+        mReleaseDate = releaseDate;
+        mVoterAverage = voterAverage;
     }
 
     public String getId(){
@@ -30,5 +35,11 @@ public class MovieTagObject extends Object{
     }
     public String getImagePath(){
         return mImagePath;
+    }
+    public String getReleaseDate(){
+        return mReleaseDate;
+    }
+    public String getVoterAverage(){
+        return mVoterAverage;
     }
 }
