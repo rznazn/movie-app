@@ -106,11 +106,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
 
+            Context context = v.getContext();
+            int id = getAdapterPosition();
             /**
              * TODO remove this Toast message it is only here for development use
              */
-            Context context = v.getContext();
-            int id = getAdapterPosition();
             Toast.makeText(context, "click" + id, Toast.LENGTH_LONG).show();
             MovieTagObject currentMovie = mMovieTagObjects.get(id);
             /**
@@ -119,8 +119,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             LayoutInflater inflater = LayoutInflater.from(context);
             final View displayView = inflater.inflate(R.layout.detail_layout, null);
+            final TextView movieOverview= (TextView) displayView.findViewById(R.id.tv_movie_detail);
+            movieOverview.setText(currentMovie.getOverview());
             builder.setView(displayView);
-            builder.setMessage(currentMovie.getTitle() + "\n" + currentMovie.getOverview());
+            builder.setMessage(currentMovie.getTitle());
             builder.setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
