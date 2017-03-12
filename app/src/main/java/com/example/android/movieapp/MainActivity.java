@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
 
         /**
+         * this method determines the spanCount for the current device
+         */
+        spanCount = spanUtility.calculateNoOfColumns(this);
+
+        /**
          * instantiate variables and assign layout manager and adapter.
          */
         new GetMoviesTask().execute(sortPreference);
