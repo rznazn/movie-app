@@ -27,6 +27,10 @@ public class NetworkUtils {
 
     private static final String MOVIE_BASE_URL = MOVIE_DB_URL;
 
+    private static final String LANGUAGE_PARAM = "language";
+
+    private static final String LANGUAGE_PREFERENCE = "en";
+
     /**
      *
      */
@@ -43,6 +47,26 @@ public class NetworkUtils {
         String queryUrl = MOVIE_BASE_URL + sortQuery + '?';
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildImageResUrl(String imagePath){
+        String queryUrl = "https://image.tmdb.org/t/p/w500/";
+        Uri builtUri = Uri.parse(queryUrl).buildUpon()
+                .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
                 .build();
 
         URL url = null;

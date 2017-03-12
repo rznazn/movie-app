@@ -1,5 +1,10 @@
 package com.example.android.movieapp;
 
+import android.net.Uri;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,5 +34,10 @@ public class MovieDBJsonUtils {
 
         }
         return movieTagObjects;
+    }
+
+    public static ImageView loadImageFromJson(ImageView view, Uri uri){
+        Picasso.with(view.getContext()).load(uri).into(view);
+        return view;
     }
 }

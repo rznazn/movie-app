@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    public TextView mIdTextView;
     private String mId;
     private String mTitle;
     private String mOverview;
@@ -55,10 +54,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
-        final MovieTagObject currentMovie = mMovieTagObjects.get(position);
+
+        MovieTagObject currentMovie = mMovieTagObjects.get(position);
 
         mTitle = currentMovie.getTitle();
-        mIdTextView.setText(mTitle);
+        holder.mIdTextView.setText(mTitle);
 
     }
 
@@ -87,6 +87,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Caches the children views for the RecyclerView
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView mIdTextView;
 
         /**
          * @param itemView this mehod sets an onCLickListener to the input view
