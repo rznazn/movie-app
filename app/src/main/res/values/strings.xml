@@ -5,4 +5,7 @@
     <string name="highest_rated">highest rated</string>
     <string name="default_text">default text should change when movie is selected.</string>
     <string name="dismiss">dismiss</string>
+    <string name="release_date">Release Date:  </string>
+    <string name="voter_average">Voter Average:  </string>
+    <string name="plot">Plot:</string>
 </resources>

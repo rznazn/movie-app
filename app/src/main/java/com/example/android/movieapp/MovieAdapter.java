@@ -148,9 +148,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             /**
              * extract data and concatonate string for the detail alertDialog
              */
-            String overViewTextViewData = "Release date: " + currentMovie.getReleaseDate()
-                    + "\n" + "Voter Average: " + currentMovie.getVoterAverage()
-                    + "\n" + "Plot:" + "\n"+ currentMovie.getOverview();
+            String overViewTextViewData = context.getString(R.string.release_date) + currentMovie.getReleaseDate()
+                    + "\n" + context.getString(R.string.voter_average) + currentMovie.getVoterAverage()
+                    + "\n" + context.getString(R.string.plot) + "\n"+ currentMovie.getOverview();
             /**
              * This AlertDialog will display the movie details
              */
