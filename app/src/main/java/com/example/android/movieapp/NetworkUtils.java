@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -62,8 +63,8 @@ public class NetworkUtils {
         return url;
     }
 
-    public static URL buildImageResUrl(String imagePath){
-        String queryUrl = "https://image.tmdb.org/t/p/w500/";
+    public static Uri buildImageResUrl(String imagePath) throws URISyntaxException {
+        String queryUrl = "https://image.tmdb.org/t/p/w500" + imagePath;
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
@@ -76,9 +77,9 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
-
-        return url;
+        Log.v(TAG, "Built Image URI " + url);
+        Uri imageUri = Uri.parse(queryUrl);
+        return imageUri;
     }
 
     /**

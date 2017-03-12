@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -56,7 +58,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
 
         MovieTagObject currentMovie = mMovieTagObjects.get(position);
-
+        String imagePath = currentMovie.getImagePath();
+        try {
+            ImageView posterImage = (ImageView) MovieDBJsonUtils.loadImageFromJson(holder.mPosterImageView,
+                    NetworkUtils.buildImageResUrl(imagePath));
+            holder.mPosterImageView.equals(posterImage);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
         mTitle = currentMovie.getTitle();
         holder.mIdTextView.setText(mTitle);
 
@@ -87,6 +96,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * Caches the children views for the RecyclerView
      */
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public ImageView mPosterImageView;
 
         public TextView mIdTextView;
 
@@ -95,6 +105,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         public MovieAdapterViewHolder(View itemView) {
             super(itemView);
+            mPosterImageView = (ImageView) itemView.findViewById(R.id.iv_grid_item);
             mIdTextView = (TextView) itemView.findViewById(R.id.tv_grid_item);
             itemView.setOnClickListener(this);
 
