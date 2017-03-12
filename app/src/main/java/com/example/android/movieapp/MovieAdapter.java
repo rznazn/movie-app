@@ -138,12 +138,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             LayoutInflater inflater = LayoutInflater.from(context);
             final View displayView = inflater.inflate(R.layout.detail_layout, null);
             final TextView movieOverview= (TextView) displayView.findViewById(R.id.tv_movie_detail);
-            final ImageView posterView = (ImageView) v.findViewById(R.id.iv_grid_item);
-            Drawable poster = posterView.getDrawable();
-            displayView.setBackground(poster);
-            float visibility = .25f;
-            displayView.setAlpha(visibility);
-
+            final ImageView posterViewSource = (ImageView) v.findViewById(R.id.iv_grid_item);
+            final ImageView posterViewAD = (ImageView) displayView.findViewById(R.id.alert_dialog_imageView);
+            Drawable poster = posterViewSource.getDrawable();
+            posterViewAD.setBackground(poster);
+            float visibility = .50f;
+            posterViewAD.setAlpha(visibility);
             movieOverview.setText(overViewTextViewData);
             builder.setView(displayView);
             builder.setMessage(currentMovie.getTitle());
