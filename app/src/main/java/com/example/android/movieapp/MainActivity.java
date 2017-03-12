@@ -45,10 +45,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         /**
          * AlertDialog for Movie DB attribution
          */
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.movieDB_disclaimer);
-        AlertDialog ad = builder.create();
-        ad.show();
+        if(!preferences.attributionShown) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.movieDB_disclaimer);
+            AlertDialog ad = builder.create();
+            ad.show();
+            preferences.attributionShown = true;
+        }
 
         /**
          * this method determines the spanCount for the current device
