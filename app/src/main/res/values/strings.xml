@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Movie App</string>
-    <string name="error_message">An error occurred while loading movie data</string>
+    <string name="error_message">An error occurred while loading movie data.
+        \nCheck network connectivity</string>
     <string name="popularity">popularity</string>
     <string name="highest_rated">highest rated</string>
     <string name="default_text">default text should change when movie is selected.</string>
