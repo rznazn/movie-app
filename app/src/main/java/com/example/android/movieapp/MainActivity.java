@@ -1,6 +1,5 @@
 package com.example.android.movieapp;
 
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -25,7 +24,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private ConnectivityManager mConnectivityManager;
 
     /**
      * Variables for use in handling the UI layouts/views/layout manager/adapter
@@ -76,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorScreen = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
-
-        showProgressBar();
         new GetMoviesTask().execute(sortPreference);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
@@ -85,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
     }
 
+    /**
+     * three "SHOW" methods to show the desired screen
+     */
     private final void showProgressBar() {
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -127,10 +126,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemSelected = item.getItemId();
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
+                showProgressBar();
                 sortPreference = "popular";
                 new GetMoviesTask().execute(sortPreference);
                 break;
             case R.id.action_sort_by_highest_rated:
+                showProgressBar();
                 sortPreference = "top_rated";
                 new GetMoviesTask().execute(sortPreference);
                 break;
