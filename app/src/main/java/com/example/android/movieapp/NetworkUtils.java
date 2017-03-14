@@ -20,11 +20,13 @@ public class NetworkUtils {
 
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
+    /**
+     * value for API KEY is stored in a class not inculded in git
+     * in order to practice keeping API KEYS confidential
+     */
+    private static final String API_KEY = ApiKey.API_KEY;
 
-    private static final String API_KEY = "36cdde377b5c895f59c64b5af593dea7";
-
-    private static final String MOVIE_DB_URL =
-            "https://api.themoviedb.org/3/movie/";
+    private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/movie/";
 
     private static final String MOVIE_BASE_URL = MOVIE_DB_URL;
 
