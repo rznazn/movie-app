@@ -1,5 +1,8 @@
 package com.example.android.movieapp;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorScreen = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
-        new GetMoviesTask().execute(sortPreference);
+        callAsyncTask();
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
         mMovieAdapter = new MovieAdapter(this, mMovieTagObjects);
@@ -126,14 +129,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemSelected = item.getItemId();
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
-                showProgressBar();
                 sortPreference = "popular";
-                new GetMoviesTask().execute(sortPreference);
+                callAsyncTask();
                 break;
             case R.id.action_sort_by_highest_rated:
-                showProgressBar();
                 sortPreference = "top_rated";
-                new GetMoviesTask().execute(sortPreference);
+                callAsyncTask();
                 break;
         }
         return true;
@@ -156,6 +157,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected String doInBackground(String... params) {
 
+
             if (params.length == 0) {
                 return null;
             }
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 e.printStackTrace();
                 return null;
             }
+
         }
 
         @Override
@@ -190,6 +193,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         }
 
+    }
+
+    private void callAsyncTask (){
+        showProgressBar();
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()){
+            new GetMoviesTask().execute(sortPreference);
+
+        }else {
+            showErrorScreen();
+        }
     }
 
 
