@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected String doInBackground(String... params) {
 
-
             if (params.length == 0) {
                 return null;
             }
@@ -195,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
+    /**
+     * check connectivity and adjust visible view prior to starting the async task
+     * show error screen if there is no connectivity
+     */
     private void callAsyncTask (){
         showProgressBar();
 
