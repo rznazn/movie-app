@@ -65,6 +65,32 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * Builds the URL used to talk to the movieDB.
+     *
+     *
+     * @return The URL to use to query the weather server.
+     */
+    public static URL buildTrailerUrl(String movieId) {
+
+        String queryUrl = MOVIE_BASE_URL +  "/" + movieId + "/";
+        Uri builtUri = Uri.parse(queryUrl).buildUpon()
+                .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
     public static Uri buildImageResUri(String imagePath) throws URISyntaxException {
         String queryUrl = "https://image.tmdb.org/t/p/w500" + imagePath;
         Uri builtUri = Uri.parse(queryUrl).buildUpon()

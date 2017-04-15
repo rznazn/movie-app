@@ -11,5 +11,6 @@
     <string name="voter_average">Voter Average:  </string>
     <string name="plot">Plot:</string>
     <string name="image_path">image path</string>
+    <string name="youtube_path">key</string>
     <string name="movieDB_disclaimer">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
 </resources>

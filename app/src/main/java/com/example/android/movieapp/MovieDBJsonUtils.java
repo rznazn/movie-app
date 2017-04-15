@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -45,14 +47,30 @@ public class MovieDBJsonUtils {
             String imagePath = object.getString("poster_path");
             String releaseDate = object.getString("release_date");
             String voterAverage = object.getString("vote_average");
+            String youtubePath = getYouTubePath(id);
 
             /**
              * set extracted JSON values to the MovieTagObject
              */
-            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
+            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage,youtubePath));
 
         }
         return movieTagObjects;
+    }
+
+    private static String getYouTubePath(String id) {
+        URL url = NetworkUtils.buildTrailerUrl(id);
+        try {
+            String videoQueryResults = NetworkUtils.getResponseFromHttpUrl(url);
+            JSONObject videosJSON = new JSONObject(videoQueryResults);
+            JSONArray videoArray =videosJSON.getJSONArray("results");
+            JSONObject firstVideoObject = videoArray.getJSONObject(0);
+            String firstVideoPath = firstVideoObject.getString("key");
+            return firstVideoPath;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
