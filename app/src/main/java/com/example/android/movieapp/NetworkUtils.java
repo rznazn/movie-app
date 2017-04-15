@@ -24,7 +24,7 @@ public class NetworkUtils {
      * value for API KEY is stored in a class not inculded in git
      * in order to practice keeping API KEYS confidential
      */
-    private static final String API_KEY = ApiKey.API_KEY;
+    private static final String API_KEY = ApiKey.MOVIEDB_API_KEY;
 
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/movie/";
 

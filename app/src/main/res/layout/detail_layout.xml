@@ -10,6 +10,10 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -23,4 +27,13 @@
             android:textColor="@android:color/black"
             android:textSize="18sp" />
     </ScrollView>
+
+        <TextView
+            android:id="@+id/trailer_youtubeview"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:text="play trailer"/>
+    </LinearLayout>
 </RelativeLayout>
