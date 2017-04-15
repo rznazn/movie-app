@@ -29,7 +29,7 @@
     </ScrollView>
 
         <TextView
-            android:id="@+id/trailer_youtubeview"
+            android:id="@+id/play_trailer"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"

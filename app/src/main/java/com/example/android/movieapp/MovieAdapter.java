@@ -132,12 +132,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         /**
          * This is the method called when an individual view is clicked
+         * extract the data from the  selected movie and open and pass to the
+         * opened detail activity
          * @param v is the view that was clicked
          */
         @Override
         public void onClick(View v) {
 
             Intent detailIntent = new Intent(v.getContext(), DetailLayoutActivity.class);
+            detailIntent.putExtra("id", getAdapterPosition());
+            MovieTagObject currentMovie = mMovieTagObjects.get(getAdapterPosition());
+            detailIntent.putExtra(v.getContext().getString(R.string.title),currentMovie.getTitle());
+            detailIntent.putExtra(v.getContext().getString(R.string.release_date), currentMovie.getReleaseDate());
+            detailIntent.putExtra(v.getContext().getString(R.string.voter_average), currentMovie.getVoterAverage());
+            detailIntent.putExtra(v.getContext().getString(R.string.plot), currentMovie.getOverview());
+            detailIntent.putExtra(v.getContext().getString(R.string.image_path), currentMovie.getImagePath());
             v.getContext().startActivity(detailIntent);
 
 //            /**
