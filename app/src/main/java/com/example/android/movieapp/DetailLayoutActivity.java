@@ -22,6 +22,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private ImageView detailImage;
     private TextView playTrailerTV;
 
+    /**
+     * variables for using youtube to play trailer.
+     */
     private static final String API_KEY = ApiKey.YOUTUBE_API_KEY;
     private String mYoutubePath;
     @Override
@@ -44,7 +47,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         String releaseDate = intent.getStringExtra(getString(R.string.release_date));
         String imagePath = intent.getStringExtra(getString(R.string.image_path));
 
-        getYoutubePath(id);
+        new GetYoutubePath().execute(id);
 
         try {
             detailImage = MovieDBJsonUtils.loadImageFromJson(detailImage, NetworkUtils.buildImageResUri(imagePath));
@@ -70,10 +73,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
     }
 
-    private void getYoutubePath(String id) {
-        new GetYoutubePath().execute(id);
-    }
-
+    /**
+     * AsyncTask used to get the youtube path for the trailer
+     */
     public class GetYoutubePath extends AsyncTask<String, Void, String>{
 
         @Override

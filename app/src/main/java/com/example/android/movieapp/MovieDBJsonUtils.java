@@ -57,8 +57,13 @@ public class MovieDBJsonUtils {
         return movieTagObjects;
     }
 
-    public static String getYouTubePath(String id) {
-        URL url = NetworkUtils.buildTrailerUrl(id);
+    /**
+     * This method returns the youtube path for the trailer
+     * @param idOfMovieInIMDB takes the id of the movie taken from the search result JSON
+     * @return returns movie path or null upon failure.
+     */
+    public static String getYouTubePath(String idOfMovieInIMDB) {
+        URL url = NetworkUtils.buildTrailerUrl(idOfMovieInIMDB);
         try {
             String videoQueryResults = NetworkUtils.getResponseFromHttpUrl(url);
             JSONObject videosJSON = new JSONObject(videoQueryResults);
