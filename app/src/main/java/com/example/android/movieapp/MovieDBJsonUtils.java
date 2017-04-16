@@ -57,7 +57,7 @@ public class MovieDBJsonUtils {
         return movieTagObjects;
     }
 
-    private static String getYouTubePath(String id) {
+    public static String getYouTubePath(String id) {
         URL url = NetworkUtils.buildTrailerUrl(id);
         try {
             String videoQueryResults = NetworkUtils.getResponseFromHttpUrl(url);

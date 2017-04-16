@@ -1,10 +1,14 @@
 package com.example.android.movieapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import java.net.URISyntaxException;
 
@@ -17,6 +21,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private TextView detailText;
     private ImageView detailImage;
     private TextView playTrailerTV;
+
+    private static final String API_KEY = ApiKey.YOUTUBE_API_KEY;
+    private String mYoutubePath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -37,6 +44,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
         String releaseDate = intent.getStringExtra(getString(R.string.release_date));
         String imagePath = intent.getStringExtra(getString(R.string.image_path));
 
+        getYoutubePath(id);
+
         try {
             detailImage = MovieDBJsonUtils.loadImageFromJson(detailImage, NetworkUtils.buildImageResUri(imagePath));
         } catch (URISyntaxException e) {
@@ -49,7 +58,35 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
         detailText.setText(overViewTextViewData);
 
+        playTrailerTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                        DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
+                startActivity(intent);
+            }
+        });
 
+
+    }
+
+    private void getYoutubePath(String id) {
+        new GetYoutubePath().execute(id);
+    }
+
+    public class GetYoutubePath extends AsyncTask<String, Void, String>{
+
+        @Override
+        protected String doInBackground(String... params) {
+            return MovieDBJsonUtils.getYouTubePath(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            mYoutubePath = s;
+
+        }
     }
 
 }

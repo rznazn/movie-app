@@ -140,8 +140,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View v) {
 
             Intent detailIntent = new Intent(v.getContext(), DetailLayoutActivity.class);
-            detailIntent.putExtra("id", getAdapterPosition());
             MovieTagObject currentMovie = mMovieTagObjects.get(getAdapterPosition());
+            detailIntent.putExtra("id", currentMovie.getId());
             detailIntent.putExtra(v.getContext().getString(R.string.title),currentMovie.getTitle());
             detailIntent.putExtra(v.getContext().getString(R.string.release_date), currentMovie.getReleaseDate());
             detailIntent.putExtra(v.getContext().getString(R.string.voter_average), currentMovie.getVoterAverage());

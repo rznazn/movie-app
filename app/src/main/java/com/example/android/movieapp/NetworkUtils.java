@@ -73,7 +73,7 @@ public class NetworkUtils {
      */
     public static URL buildTrailerUrl(String movieId) {
 
-        String queryUrl = MOVIE_BASE_URL +  "/" + movieId + "/";
+        String queryUrl = MOVIE_BASE_URL + movieId + "/videos";
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
                 .appendQueryParameter(API_PARAM, API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
