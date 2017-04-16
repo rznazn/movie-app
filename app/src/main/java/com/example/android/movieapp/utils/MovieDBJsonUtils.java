@@ -47,12 +47,11 @@ public class MovieDBJsonUtils {
             String imagePath = object.getString("poster_path");
             String releaseDate = object.getString("release_date");
             String voterAverage = object.getString("vote_average");
-            String youtubePath = getYouTubePath(id);
 
             /**
              * set extracted JSON values to the MovieTagObject
              */
-            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage,youtubePath));
+            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
 
         }
         return movieTagObjects;
@@ -63,19 +62,21 @@ public class MovieDBJsonUtils {
      * @param idOfMovieInIMDB takes the id of the movie taken from the search result JSON
      * @return returns movie path or null upon failure.
      */
-    public static String getYouTubePath(String idOfMovieInIMDB) {
-        URL url = NetworkUtils.buildTrailerUrl(idOfMovieInIMDB);
-        try {
-            String videoQueryResults = NetworkUtils.getResponseFromHttpUrl(url);
-            JSONObject videosJSON = new JSONObject(videoQueryResults);
-            JSONArray videoArray =videosJSON.getJSONArray("results");
-            JSONObject firstVideoObject = videoArray.getJSONObject(0);
-            String firstVideoPath = firstVideoObject.getString("key");
-            return firstVideoPath;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static String getYouTubePath(final String idOfMovieInIMDB) {
+
+                URL url = NetworkUtils.buildTrailerUrl(idOfMovieInIMDB);
+                try {
+                    String videoQueryResults = NetworkUtils.getResponseFromHttpUrl(url);
+                    JSONObject videosJSON = new JSONObject(videoQueryResults);
+                    JSONArray videoArray =videosJSON.getJSONArray("results");
+                    JSONObject firstVideoObject = videoArray.getJSONObject(0);
+                    String firstVideoPath = firstVideoObject.getString("key");
+                    return firstVideoPath;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
     }
 
     /**

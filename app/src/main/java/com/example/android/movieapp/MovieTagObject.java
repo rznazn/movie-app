@@ -26,14 +26,13 @@ public class MovieTagObject extends Object{
      * @param voterAverage of the movie
      */
     public MovieTagObject(String id, String title, String overview, String imagePath, String releaseDate,
-                          String voterAverage, String youtubePath){
+                          String voterAverage){
         mId = id;
         mTitle = title;
         mOverview = overview;
         mImagePath = imagePath;
         mReleaseDate = releaseDate;
         mVoterAverage = voterAverage;
-        mYouTubePath = youtubePath;
     }
 
     /**
@@ -58,5 +57,4 @@ public class MovieTagObject extends Object{
     public String getVoterAverage(){
         return mVoterAverage;
     }
-    public String getYouTubePath(){return mYouTubePath;}
 }
