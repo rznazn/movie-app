@@ -1,6 +1,8 @@
 package com.example.android.movieapp;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -9,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +19,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.movieapp.data.FavoritesDBHelper;
+import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.MovieAdapter;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
 import com.example.android.movieapp.utils.NetworkUtils;
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setTitle(sortPreference);
 
 
         /**
@@ -134,14 +140,50 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
                 sortPreference = "popular";
+                getSupportActionBar().setTitle(R.string.popular);
                 callAsyncTask();
                 break;
             case R.id.action_sort_by_highest_rated:
                 sortPreference = "top_rated";
+                getSupportActionBar().setTitle(R.string.highest_rated);
                 callAsyncTask();
+                break;
+            case R.id.action_show_favorites:
+                loadFavoritesFromDatabase();
+                getSupportActionBar().setTitle(R.string.favorite);
                 break;
         }
         return true;
+    }
+
+    /**
+     * this method takes the content from the favorites database and sends it to the adapter
+     */
+    private void loadFavoritesFromDatabase() {
+        mMovieTagObjects.clear();
+        FavoritesDBHelper helper = new FavoritesDBHelper(this);
+        SQLiteDatabase database = helper.getReadableDatabase();
+        Cursor cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        while (cursor.moveToNext()){
+            String id = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
+            String title = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME));
+            String overview = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW));
+            String imagePath = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH));
+            String releaseDate = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
+            String voterAverage = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
+
+
+            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
+        }
+        cursor.close();
+        mMovieAdapter.setMovieData(mMovieTagObjects);
+
     }
 
 

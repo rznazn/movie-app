@@ -16,4 +16,5 @@
     <string name="youtube_error_message">Error loading trailer. Check network.</string>
     <string name="no_trailer">No trailer available for this movie.</string>
     <string name="favorite">favorite</string>
+    <string name="popular">popular</string>
 </resources>

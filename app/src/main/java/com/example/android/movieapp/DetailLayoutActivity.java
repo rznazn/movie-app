@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -183,7 +182,6 @@ public class DetailLayoutActivity extends AppCompatActivity {
         contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE, mVoterAverage);
 
         long rowid = database.insert(favoritesContract.favoritesEntry.TABLE_NAME, null, contentValues);
-        Log.v("DetailActivity: ", String.valueOf(rowid));
     }
 
 }
