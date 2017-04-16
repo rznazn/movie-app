@@ -1,8 +1,12 @@
 package com.example.android.movieapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,7 +51,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         String releaseDate = intent.getStringExtra(getString(R.string.release_date));
         String imagePath = intent.getStringExtra(getString(R.string.image_path));
 
-        new GetYoutubePath().execute(id);
+        callAsyncTask(id);
 
         try {
             detailImage = MovieDBJsonUtils.loadImageFromJson(detailImage, NetworkUtils.buildImageResUri(imagePath));
@@ -64,13 +68,46 @@ public class DetailLayoutActivity extends AppCompatActivity {
         playTrailerTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                        DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
-                startActivity(intent);
+
+                if (mYoutubePath != null) {
+                    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                    if (netInfo != null && netInfo.isConnected()) {
+                        Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                                DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
+                        startActivity(intent);
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
+                        builder.setMessage(R.string.youtube_error_message);
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                }else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
+                    builder.setMessage(R.string.no_trailer);
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
             }
         });
 
 
+    }
+
+    /**
+     * check connectivity and adjust visible view prior to starting the async task
+     * show error screen if there is no connectivity
+     */
+    private void callAsyncTask (String movieId){
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()){
+            new GetYoutubePath().execute(movieId);
+
+        }
     }
 
     /**
