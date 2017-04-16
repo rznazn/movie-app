@@ -1,8 +1,9 @@
-package com.example.android.movieapp;
+package com.example.android.movieapp.utils;
 
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.example.android.movieapp.MovieTagObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;

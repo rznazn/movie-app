@@ -1,4 +1,4 @@
-package com.example.android.movieapp;
+package com.example.android.movieapp.utils;
 
 import android.net.Uri;
 import android.util.Log;

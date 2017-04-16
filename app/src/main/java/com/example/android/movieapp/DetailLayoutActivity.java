@@ -12,6 +12,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.movieapp.utils.ApiKey;
+import com.example.android.movieapp.utils.MovieDBJsonUtils;
+import com.example.android.movieapp.utils.NetworkUtils;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import java.net.URISyntaxException;

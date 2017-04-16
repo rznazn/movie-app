@@ -16,6 +16,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.movieapp.utils.MovieAdapter;
+import com.example.android.movieapp.utils.MovieDBJsonUtils;
+import com.example.android.movieapp.utils.NetworkUtils;
+
 import org.json.JSONException;
 
 import java.net.URL;
