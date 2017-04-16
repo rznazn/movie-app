@@ -15,4 +15,5 @@
     <string name="movieDB_disclaimer">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
     <string name="youtube_error_message">Error loading trailer. Check network.</string>
     <string name="no_trailer">No trailer available for this movie.</string>
+    <string name="favorite">favorite</string>
 </resources>

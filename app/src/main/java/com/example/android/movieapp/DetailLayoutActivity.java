@@ -25,6 +25,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private TextView detailText;
     private ImageView detailImage;
     private TextView playTrailerTV;
+    private TextView favoriteTV;
 
     /**
      * variables for using youtube to play trailer.
@@ -38,6 +39,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.detail_layout);
 
         playTrailerTV = (TextView) findViewById(R.id.play_trailer);
+        favoriteTV = (TextView) findViewById(R.id.favorite);
         detailText = (TextView) findViewById(R.id.tv_movie_detail);
         detailImage = (ImageView) findViewById(R.id.alert_dialog_imageView);
         detailImage.setAlpha(.40f);
@@ -65,30 +67,22 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
         detailText.setText(overViewTextViewData);
 
+        /**
+         * clickListener to launch movie trailer
+         */
         playTrailerTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (mYoutubePath != null) {
-                    ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-                    NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                    if (netInfo != null && netInfo.isConnected()) {
-                        Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                                DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
-                        startActivity(intent);
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
-                        builder.setMessage(R.string.youtube_error_message);
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
-                    }
-                }else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
-                    builder.setMessage(R.string.no_trailer);
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+                trailerClickHandler(v);
+            }
+        });
+        /**
+         * click listener for the favorite option
+         */
+        favoriteTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favoritesClickHandler(v);
             }
         });
 
@@ -126,6 +120,38 @@ public class DetailLayoutActivity extends AppCompatActivity {
             mYoutubePath = s;
 
         }
+    }
+
+    /**
+     * handle the click selection to play trailer
+     * @param v
+     */
+    private void trailerClickHandler(View v){
+
+        if (mYoutubePath != null) {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()) {
+                Intent intent = YouTubeStandalonePlayer.createVideoIntent(
+                        DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
+                startActivity(intent);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
+                builder.setMessage(R.string.youtube_error_message);
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
+            builder.setMessage(R.string.no_trailer);
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+    }
+
+    private void favoritesClickHandler(View v){
+
     }
 
 }
