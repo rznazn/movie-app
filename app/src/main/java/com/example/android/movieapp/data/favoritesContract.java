@@ -1,4 +1,4 @@
-package com.example.android.movieapp.favoritesSqlDB;
+package com.example.android.movieapp.data;
 
 import android.content.ContentResolver;
 import android.net.Uri;
