@@ -164,7 +164,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private void setFavoriteView(boolean trueToFavorite){
         if (trueToFavorite) {
             favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorForFavorite));
-        } else if (trueToFavorite){
+        } else if (!trueToFavorite){
             favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorAccent));
         }
     }
