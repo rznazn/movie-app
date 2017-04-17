@@ -3,6 +3,7 @@ package com.example.android.movieapp;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -51,6 +52,12 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private String mImagePath;
     private String mReleaseDate;
     private String mVoterAverage;
+
+    /**
+     * member Variable for tracking if the selected movie has been favorited
+     */
+    private boolean mMovieIsFavorite;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -72,7 +79,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 
-        callAsyncTask(mID);
+        callCheckIfMovieIsFavoriteAsnctask(mID);
+        callGetYoutubePathAsyncTask(mID);
 
         try {
             detailImage = MovieDBJsonUtils.loadImageFromJson(detailImage, NetworkUtils.buildImageResUri(mImagePath));
@@ -109,10 +117,61 @@ public class DetailLayoutActivity extends AppCompatActivity {
     }
 
     /**
+     * method to check if the current movie is a favorite
+     * @param mID the id of the current movie in the detail activity
+     * @return true for a favorite false if not
+     */
+    private void callCheckIfMovieIsFavoriteAsnctask(String mID) {
+        CheckIfMovieIsFavorite checkIfMovieIsFavorite = new CheckIfMovieIsFavorite();
+        checkIfMovieIsFavorite.execute(mID);
+    }
+
+    /**
+     * async task to handle the database query to check if the current movie is a favorite
+     */
+    public class CheckIfMovieIsFavorite extends AsyncTask<String, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String[] args = {mID};
+            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
+            SQLiteDatabase database = helper.getReadableDatabase();
+            Cursor cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
+                    null,
+                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID + " = ? ",
+                    args,
+                    null,
+                    null,
+                    null);
+            if (cursor.moveToFirst()){
+                cursor.close();
+                return true;
+            } else{
+                cursor.close();
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            setFavoriteView(aBoolean);
+        }
+    }
+
+    private void setFavoriteView(boolean trueToFavorite){
+        if (trueToFavorite) {
+            favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorForFavorite));
+        } else if (trueToFavorite){
+            favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        }
+    }
+
+    /**
      * check connectivity and adjust visible view prior to starting the async task
      * show error screen if there is no connectivity
      */
-    private void callAsyncTask (String movieId){
+    private void callGetYoutubePathAsyncTask(String movieId){
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
