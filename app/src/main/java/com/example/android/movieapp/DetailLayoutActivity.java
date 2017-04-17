@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.movieapp.data.FavoritesDBHelper;
 import com.example.android.movieapp.data.favoritesContract;
@@ -155,6 +156,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
+            mMovieIsFavorite = aBoolean;
             setFavoriteView(aBoolean);
         }
     }
@@ -228,19 +230,100 @@ public class DetailLayoutActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * initial disposition determined for click event
+     * @param v
+     */
     private void favoritesClickHandler(View v){
-        FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
-        SQLiteDatabase database = helper.getWritableDatabase();
+        if (!mMovieIsFavorite){
+            AddMovieToFavorites addMovieToFavorites = new AddMovieToFavorites();
+            addMovieToFavorites.execute();
+        } else if (mMovieIsFavorite){
+            RemoveMovieFromFavorites removeMovieFromFavorites = new RemoveMovieFromFavorites();
+            removeMovieFromFavorites.execute();
+        }
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID, mID);
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME, mTitle);
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW, mOverview);
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH, mImagePath);
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE, mReleaseDate);
-        contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE, mVoterAverage);
+    }
 
-        long rowid = database.insert(favoritesContract.favoritesEntry.TABLE_NAME, null, contentValues);
+    /**
+     * Async task to add movie to favorites
+     */
+    public class AddMovieToFavorites extends AsyncTask<Void,Void,Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
+            SQLiteDatabase database = helper.getWritableDatabase();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID, mID);
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME, mTitle);
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW, mOverview);
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH, mImagePath);
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE, mReleaseDate);
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE, mVoterAverage);
+
+            long rowid = database.insert(favoritesContract.favoritesEntry.TABLE_NAME, null, contentValues);
+
+            if (rowid >0 ){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean){
+                Toast.makeText(DetailLayoutActivity.this, "Movie added to favorites", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(DetailLayoutActivity.this, "failed to add movie", Toast.LENGTH_LONG).show();
+
+            }
+            mMovieIsFavorite = aBoolean;
+            setFavoriteView(mMovieIsFavorite);
+        }
+    }
+
+    /**
+     * Async task to remove movie from favorites
+     */
+    public class RemoveMovieFromFavorites extends AsyncTask<Void,Void,Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String[] args = {mID};
+            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
+            SQLiteDatabase database = helper.getWritableDatabase();
+
+            int rowsDeleted = database.delete(favoritesContract.favoritesEntry.TABLE_NAME,
+                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID + " = ? ",
+                    args);
+
+            if (rowsDeleted >0 ){
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        /**
+         * @param aBoolean if true, indicates that movie was successfully deleted from favorites
+         */
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if (aBoolean){
+                mMovieIsFavorite = false;
+                setFavoriteView(mMovieIsFavorite);
+                Toast.makeText(DetailLayoutActivity.this, "Movie deleted from favorites", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(DetailLayoutActivity.this, "failed to remove movie from favorites", Toast.LENGTH_LONG).show();
+
+            }
+
+        }
     }
 
 }
