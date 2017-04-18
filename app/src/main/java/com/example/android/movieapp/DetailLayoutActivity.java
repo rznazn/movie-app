@@ -35,7 +35,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
     private TextView detailText;
     private ImageView detailImage;
-    private TextView playTrailerTV;
+    private ImageView playTrailerTV;
     private TextView favoriteTV;
 
     /**
@@ -65,7 +65,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
 
-        playTrailerTV = (TextView) findViewById(R.id.play_trailer);
+        playTrailerTV = (ImageView) findViewById(R.id.play_trailer);
         favoriteTV = (TextView) findViewById(R.id.favorite);
         detailText = (TextView) findViewById(R.id.tv_movie_detail);
         detailImage = (ImageView) findViewById(R.id.alert_dialog_imageView);

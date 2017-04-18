@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/tv_movie_detail"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/default_text"
@@ -29,12 +29,12 @@
             android:textSize="18sp" />
     </ScrollView>
 
-        <TextView
+        <ImageView
             android:id="@+id/play_trailer"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:gravity="center"
-            android:background="@android:color/holo_red_light"
+            android:background="@drawable/youtube_social_circle_red_48px"
             android:text="play trailer" />
         <TextView
             android:id="@+id/favorite"
