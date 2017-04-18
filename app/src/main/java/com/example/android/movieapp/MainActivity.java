@@ -53,8 +53,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static String sortPreference = "popular";
     public static String response = "failed";
     private static final String FAVORITE = "favorite";
-    private static final String HIGH_RATED = "high rated";
-    private static final String MOST_POPULAR = "most popular";
+    private static final String HIGH_RATED = "top_rated";
+    private static final String MOST_POPULAR = "popular";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
