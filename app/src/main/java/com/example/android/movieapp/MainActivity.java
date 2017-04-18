@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     public static String sortPreference = "popular";
     public static String response = "failed";
+    private static final String FAVORITE = "favorite";
+    private static final String HIGH_RATED = "high rated";
+    private static final String MOST_POPULAR = "most popular";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setHasFixedSize(false);
         mMovieAdapter = new MovieAdapter(this, mMovieTagObjects);
         mRecyclerView.setAdapter(mMovieAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        switch (sortPreference){
+            case FAVORITE:
+                loadFavoritesFromDatabase();
+                break;
+            case HIGH_RATED:
+                callAsyncTask();
+                break;
+            case MOST_POPULAR:
+                callAsyncTask();
+                break;
+        }
     }
 
     /**
@@ -139,16 +157,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int itemSelected = item.getItemId();
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
-                sortPreference = "popular";
+                sortPreference = MOST_POPULAR;
                 getSupportActionBar().setTitle(R.string.popular);
                 callAsyncTask();
                 break;
             case R.id.action_sort_by_highest_rated:
-                sortPreference = "top_rated";
+                sortPreference = HIGH_RATED;
                 getSupportActionBar().setTitle(R.string.highest_rated);
                 callAsyncTask();
                 break;
             case R.id.action_show_favorites:
+                sortPreference = FAVORITE;
                 loadFavoritesFromDatabase();
                 getSupportActionBar().setTitle(R.string.favorite);
                 break;

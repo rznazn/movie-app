@@ -36,7 +36,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private TextView detailText;
     private ImageView detailImage;
     private ImageView playTrailerTV;
-    private TextView favoriteTV;
+    private ImageView favoriteTV;
 
     /**
      * variables for using youtube to play trailer.
@@ -66,7 +66,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.detail_layout);
 
         playTrailerTV = (ImageView) findViewById(R.id.play_trailer);
-        favoriteTV = (TextView) findViewById(R.id.favorite);
+        favoriteTV = (ImageView) findViewById(R.id.favorite);
         detailText = (TextView) findViewById(R.id.tv_movie_detail);
         detailImage = (ImageView) findViewById(R.id.alert_dialog_imageView);
         detailImage.setAlpha(.40f);
@@ -163,9 +163,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
     private void setFavoriteView(boolean trueToFavorite){
         if (trueToFavorite) {
-            favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorForFavorite));
+            favoriteTV.setBackground(getResources().getDrawable(R.drawable.yellowstar));
         } else if (!trueToFavorite){
-            favoriteTV.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            favoriteTV.setBackground(getResources().getDrawable(R.drawable.clearstar));
         }
     }
 

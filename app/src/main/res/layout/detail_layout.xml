@@ -34,15 +34,13 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
-            android:background="@drawable/youtube_social_circle_red_48px"
-            android:text="play trailer" />
-        <TextView
+            android:background="@drawable/youtube_social_circle_red_48px" />
+        <ImageView
             android:id="@+id/favorite"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:gravity="center"
             android:layout_marginTop="8dp"
-            android:background="@color/colorPrimary"
-            android:text="favorite"/>
+            android:background="@drawable/clearstar"/>
     </LinearLayout>
 </RelativeLayout>
