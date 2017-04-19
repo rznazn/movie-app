@@ -69,7 +69,7 @@ public class FavoritesProvider extends ContentProvider {
             case FAVORITES:
             cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
                     projection,
-                    selection,
+                    selection + " = ? ",
                     selectionArgs,
                     null,
                     null,

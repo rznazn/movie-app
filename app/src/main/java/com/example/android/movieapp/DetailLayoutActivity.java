@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.movieapp.data.FavoritesDBHelper;
 import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.ApiKey;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
@@ -81,7 +79,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 
-        callCheckIfMovieIsFavoriteAsnctask(mID);
+//        callCheckIfMovieIsFavoriteAsnctask(mID);
+        checkIfMovieIsFavorite();
         callGetYoutubePathAsyncTask(mID);
 
         try {
@@ -119,49 +118,26 @@ public class DetailLayoutActivity extends AppCompatActivity {
     }
 
     /**
-     * method to check if the current movie is a favorite
-     * @param mID the id of the current movie in the detail activity
-     * @return true for a favorite false if not
+     * method for checking if the current movie is a favorite
      */
-    private void callCheckIfMovieIsFavoriteAsnctask(String mID) {
-        CheckIfMovieIsFavorite checkIfMovieIsFavorite = new CheckIfMovieIsFavorite();
-        checkIfMovieIsFavorite.execute(mID);
+
+    private void checkIfMovieIsFavorite() {
+        String[] args = {mID};
+        Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,
+                null,
+                favoritesContract.favoritesEntry.COLUMN_MOVIE_ID,
+                args,
+                null);
+        mMovieIsFavorite = cursor.moveToFirst();
+        cursor.close();
+        setFavoriteView(mMovieIsFavorite);
+
     }
+
 
     /**
-     * async task to handle the database query to check if the current movie is a favorite
+     * @param trueToFavorite uses param to determine if the icon should reflect currently favorite or not
      */
-    public class CheckIfMovieIsFavorite extends AsyncTask<String, Void, Boolean>{
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            String[] args = {mID};
-            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
-            SQLiteDatabase database = helper.getReadableDatabase();
-            Cursor cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
-                    null,
-                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID + " = ? ",
-                    args,
-                    null,
-                    null,
-                    null);
-            if (cursor.moveToFirst()){
-                cursor.close();
-                return true;
-            } else{
-                cursor.close();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            mMovieIsFavorite = aBoolean;
-            setFavoriteView(aBoolean);
-        }
-    }
-
     private void setFavoriteView(boolean trueToFavorite){
         if (trueToFavorite) {
             favoriteTV.setBackground(getResources().getDrawable(R.drawable.yellowstar));
