@@ -2,7 +2,6 @@ package com.example.android.movieapp;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.android.movieapp.data.FavoritesDBHelper;
 import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.MovieAdapter;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
@@ -180,15 +178,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     private void loadFavoritesFromDatabase() {
         mMovieTagObjects.clear();
-        FavoritesDBHelper helper = new FavoritesDBHelper(this);
-        SQLiteDatabase database = helper.getReadableDatabase();
-        Cursor cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
+        Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,null,null,null,null);
         while (cursor.moveToNext()){
             String id = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
             String title = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME));

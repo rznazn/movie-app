@@ -1,6 +1,5 @@
 package com.example.android.movieapp.data;
 
-import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -27,13 +26,6 @@ public class favoritesContract {
      * Inner class that defines the Constants for the list database columns
      */
     public static final class favoritesEntry implements BaseColumns {
-        /**
-         * The MIME type variables
-         */
-        public static final String CONTENT_LIST_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NAME;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NAME + "/#";
 
         /**
          * The content URI to access the pet data in the provider

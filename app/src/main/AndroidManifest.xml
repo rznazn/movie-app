@@ -20,6 +20,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailLayoutActivity"></activity>
+
+        <provider
+            android:name="com.example.android.movieapp.data.FavoritesProvider"
+            android:authorities="com.example.android.movieapp"
+            android:exported="false"/>
     </application>
 
 </manifest>
