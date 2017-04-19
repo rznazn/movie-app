@@ -1,6 +1,7 @@
 package com.example.android.movieapp.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
@@ -8,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import static android.R.attr.id;
 
 /**
  * Created by sport on 4/18/2017.
@@ -84,10 +87,32 @@ public class FavoritesProvider extends ContentProvider {
         return null;
     }
 
+    /**
+     * method used to add new movie to favorites database
+     * @param uri
+     * @param values
+     * @return
+     */
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+        Uri uriToReturn;
+        int uriMatch = mUriMatcher.match(uri);
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        switch (uriMatch) {
+            case FAVORITES:
+                long rowId = database.insert(favoritesContract.favoritesEntry.TABLE_NAME,null, values);
+                if (id > 0) {
+                    uriToReturn = ContentUris.withAppendedId(favoritesContract.favoritesEntry.CONTENT_URI, rowId);
+                } else {
+                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        return uriToReturn;
+
     }
 
     @Override
@@ -95,6 +120,14 @@ public class FavoritesProvider extends ContentProvider {
         return 0;
     }
 
+    /**
+     * method will not be used. 
+     * @param uri
+     * @param values
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;

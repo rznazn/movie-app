@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -231,30 +232,14 @@ public class DetailLayoutActivity extends AppCompatActivity {
     }
 
     /**
-     * initial disposition determined for click event
+     * Favorite or unfavorite movie based on boolean mMovieIsFavorite
      * @param v
      */
     private void favoritesClickHandler(View v){
+        /**
+         * if mMovieIsFavorite is false, add to favorites and set mMovieIsFavorite as true
+         */
         if (!mMovieIsFavorite){
-            AddMovieToFavorites addMovieToFavorites = new AddMovieToFavorites();
-            addMovieToFavorites.execute();
-        } else if (mMovieIsFavorite){
-            RemoveMovieFromFavorites removeMovieFromFavorites = new RemoveMovieFromFavorites();
-            removeMovieFromFavorites.execute();
-        }
-
-    }
-
-    /**
-     * Async task to add movie to favorites
-     */
-    public class AddMovieToFavorites extends AsyncTask<Void,Void,Boolean>{
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
-            SQLiteDatabase database = helper.getWritableDatabase();
-
             ContentValues contentValues = new ContentValues();
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID, mID);
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME, mTitle);
@@ -263,28 +248,24 @@ public class DetailLayoutActivity extends AppCompatActivity {
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE, mReleaseDate);
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE, mVoterAverage);
 
-            long rowid = database.insert(favoritesContract.favoritesEntry.TABLE_NAME, null, contentValues);
+            Uri rowUri = getContentResolver().insert(favoritesContract.favoritesEntry.CONTENT_URI, contentValues);
 
-            if (rowid >0 ){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean){
+            if (rowUri != null ){
+                mMovieIsFavorite = true;
                 Toast.makeText(DetailLayoutActivity.this, "Movie added to favorites", Toast.LENGTH_LONG).show();
             } else {
+                mMovieIsFavorite = false;
                 Toast.makeText(DetailLayoutActivity.this, "failed to add movie", Toast.LENGTH_LONG).show();
-
             }
-            mMovieIsFavorite = aBoolean;
             setFavoriteView(mMovieIsFavorite);
+        } else if (mMovieIsFavorite){
+            RemoveMovieFromFavorites removeMovieFromFavorites = new RemoveMovieFromFavorites();
+            removeMovieFromFavorites.execute();
         }
+
     }
+
+
 
     /**
      * Async task to remove movie from favorites
