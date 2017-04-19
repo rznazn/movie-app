@@ -259,52 +259,22 @@ public class DetailLayoutActivity extends AppCompatActivity {
             }
             setFavoriteView(mMovieIsFavorite);
         } else if (mMovieIsFavorite){
-            RemoveMovieFromFavorites removeMovieFromFavorites = new RemoveMovieFromFavorites();
-            removeMovieFromFavorites.execute();
-        }
-
-    }
-
-
-
-    /**
-     * Async task to remove movie from favorites
-     */
-    public class RemoveMovieFromFavorites extends AsyncTask<Void,Void,Boolean>{
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
             String[] args = {mID};
-            FavoritesDBHelper helper = new FavoritesDBHelper(DetailLayoutActivity.this);
-            SQLiteDatabase database = helper.getWritableDatabase();
 
-            int rowsDeleted = database.delete(favoritesContract.favoritesEntry.TABLE_NAME,
-                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID + " = ? ",
+            int rowsDeleted = getContentResolver().delete(favoritesContract.favoritesEntry.CONTENT_URI,
+                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID,
                     args);
 
             if (rowsDeleted >0 ){
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        /**
-         * @param aBoolean if true, indicates that movie was successfully deleted from favorites
-         */
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-            if (aBoolean){
                 mMovieIsFavorite = false;
                 setFavoriteView(mMovieIsFavorite);
                 Toast.makeText(DetailLayoutActivity.this, "Movie deleted from favorites", Toast.LENGTH_LONG).show();
             } else {
+
                 Toast.makeText(DetailLayoutActivity.this, "failed to remove movie from favorites", Toast.LENGTH_LONG).show();
-
             }
-
         }
+
     }
 
 }

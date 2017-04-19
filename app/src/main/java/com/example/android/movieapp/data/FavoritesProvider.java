@@ -115,13 +115,30 @@ public class FavoritesProvider extends ContentProvider {
 
     }
 
+    /**
+     * method will remove a movie from favorites list
+     * @param uri
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        int rowsDeleted;
+        int uriMatch = mUriMatcher.match(uri);
+        SQLiteDatabase database = mDBHelper.getWritableDatabase();
+        switch (uriMatch) {
+            case FAVORITES:
+                rowsDeleted = database.delete(favoritesContract.favoritesEntry.TABLE_NAME,selection + "= ? ",selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        return rowsDeleted;
     }
 
     /**
-     * method will not be used. 
+     * method will not be used.
      * @param uri
      * @param values
      * @param selection
