@@ -23,6 +23,7 @@ import com.example.android.movieapp.utils.NetworkUtils;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import static com.example.android.movieapp.R.string.plot;
 
@@ -32,15 +33,16 @@ public class DetailLayoutActivity extends AppCompatActivity {
      * member variables for the views of the detail layout
      */
 
-    private TextView detailText;
-    private ImageView detailImage;
-    private ImageView playTrailerTV;
-    private ImageView favoriteTV;
+    private TextView detailTV;
+    private ImageView posterIV;
+    private ImageView playTrailerIV;
+    private ImageView favoriteIV;
+    private ImageView reviewsIV;
 
     /**
      * variables for using youtube to play trailer.
      */
-    private static final String API_KEY = ApiKey.YOUTUBE_API_KEY;
+    private static final String YOUTUBE_API_KEY = ApiKey.YOUTUBE_API_KEY;
     private String mYoutubePath;
 
     /**
@@ -64,11 +66,12 @@ public class DetailLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
 
-        playTrailerTV = (ImageView) findViewById(R.id.play_trailer);
-        favoriteTV = (ImageView) findViewById(R.id.favorite);
-        detailText = (TextView) findViewById(R.id.tv_movie_detail);
-        detailImage = (ImageView) findViewById(R.id.alert_dialog_imageView);
-        detailImage.setAlpha(.40f);
+        playTrailerIV = (ImageView) findViewById(R.id.play_trailer);
+        favoriteIV = (ImageView) findViewById(R.id.favorite);
+        detailTV = (TextView) findViewById(R.id.tv_movie_detail);
+        reviewsIV = (ImageView) findViewById(R.id.reviews);
+        posterIV = (ImageView) findViewById(R.id.alert_dialog_imageView);
+        posterIV.setAlpha(.40f);
 
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(getString(R.string.title));
@@ -84,21 +87,21 @@ public class DetailLayoutActivity extends AppCompatActivity {
         callGetYoutubePathAsyncTask(mID);
 
         try {
-            detailImage = MovieDBJsonUtils.loadImageFromJson(detailImage, NetworkUtils.buildImageResUri(mImagePath));
+            posterIV = MovieDBJsonUtils.loadImageFromJson(posterIV, NetworkUtils.buildImageResUri(mImagePath));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
         String overViewTextViewData = getString(R.string.release_date) + mReleaseDate
                     + "\n" + getString(R.string.voter_average) + mVoterAverage
-                    + "\n" + getString(R.string.plot) + "\n"+ mOverview;
+                    + "\n" + getString(plot) + "\n"+ mOverview;
 
-        detailText.setText(overViewTextViewData);
+        detailTV.setText(overViewTextViewData);
 
         /**
          * clickListener to launch movie trailer
          */
-        playTrailerTV.setOnClickListener(new View.OnClickListener() {
+        playTrailerIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 trailerClickHandler(v);
@@ -107,13 +110,21 @@ public class DetailLayoutActivity extends AppCompatActivity {
         /**
          * click listener for the favorite option
          */
-        favoriteTV.setOnClickListener(new View.OnClickListener() {
+        favoriteIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 favoritesClickHandler(v);
             }
         });
-
+        /**
+         * clicklisenter for the reviews button
+         */
+        reviewsIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reviewsClickHandler(v);
+            }
+        });
 
     }
 
@@ -140,9 +151,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
      */
     private void setFavoriteView(boolean trueToFavorite){
         if (trueToFavorite) {
-            favoriteTV.setBackground(getResources().getDrawable(R.drawable.yellowstar));
+            favoriteIV.setBackground(getResources().getDrawable(R.drawable.yellowstar));
         } else if (!trueToFavorite){
-            favoriteTV.setBackground(getResources().getDrawable(R.drawable.clearstar));
+            favoriteIV.setBackground(getResources().getDrawable(R.drawable.clearstar));
         }
     }
 
@@ -191,7 +202,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
             if (netInfo != null && netInfo.isConnected()) {
                 Intent intent = YouTubeStandalonePlayer.createVideoIntent(
-                        DetailLayoutActivity.this, API_KEY, mYoutubePath, 0, true, true);
+                        DetailLayoutActivity.this, YOUTUBE_API_KEY, mYoutubePath, 0, true, true);
                 startActivity(intent);
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailLayoutActivity.this);
@@ -249,6 +260,47 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
                 Toast.makeText(DetailLayoutActivity.this, "failed to remove movie from favorites", Toast.LENGTH_LONG).show();
             }
+        }
+
+    }
+
+    /**
+     * reviews click handler
+     */
+    private void reviewsClickHandler(View v){
+        new GetMoviesReviewsTask().execute(mID);
+    }
+    /**
+     * Async Task the makes network request to get movie reviews
+     */
+    public class GetMoviesReviewsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            if (params.length == 0) {
+                return null;
+            }
+
+            String movieId = params[0];
+            URL movieUrl = NetworkUtils.buildReviewsUri(movieId);
+
+            try {
+                String responseFromHttpUrl = NetworkUtils
+                        .getResponseFromHttpUrl(movieUrl);
+
+                return responseFromHttpUrl;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+           return;
         }
 
     }

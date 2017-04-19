@@ -24,7 +24,7 @@ public class NetworkUtils {
      * value for API KEY is stored in a class not inculded in git
      * in order to practice keeping API KEYS confidential
      */
-    private static final String API_KEY = ApiKey.MOVIEDB_API_KEY;
+    private static final String MOVIEDB_API_KEY = ApiKey.MOVIEDB_API_KEY;
 
     private static final String MOVIE_DB_URL = "https://api.themoviedb.org/3/movie/";
 
@@ -49,7 +49,7 @@ public class NetworkUtils {
 
         String queryUrl = MOVIE_BASE_URL + sortQuery + '?';
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
-                .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(API_PARAM, MOVIEDB_API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
                 .build();
 
@@ -75,7 +75,7 @@ public class NetworkUtils {
 
         String queryUrl = MOVIE_BASE_URL + movieId + "/videos";
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
-                .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(API_PARAM, MOVIEDB_API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
                 .build();
 
@@ -91,10 +91,16 @@ public class NetworkUtils {
         return url;
     }
 
+    /**
+     * take the image path and returns the uri to get the movie poster
+     * @param imagePath
+     * @return
+     * @throws URISyntaxException
+     */
     public static Uri buildImageResUri(String imagePath) throws URISyntaxException {
         String queryUrl = "https://image.tmdb.org/t/p/w500" + imagePath;
         Uri builtUri = Uri.parse(queryUrl).buildUpon()
-                .appendQueryParameter(API_PARAM, API_KEY)
+                .appendQueryParameter(API_PARAM, MOVIEDB_API_KEY)
                 .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
                 .build();
 
@@ -134,6 +140,31 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    /**
+     * builds the URL for the reviews
+     * @param movieId
+     * @return
+     */
+    public static  URL buildReviewsUri(String movieId){
+
+        String queryUrl = MOVIE_BASE_URL + movieId + "/reviews";
+        Uri builtUri = Uri.parse(queryUrl).buildUpon()
+                .appendQueryParameter(API_PARAM, MOVIEDB_API_KEY)
+                .appendQueryParameter(LANGUAGE_PARAM, LANGUAGE_PREFERENCE)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built Review URI " + url);
+
+        return url;
     }
 
 
