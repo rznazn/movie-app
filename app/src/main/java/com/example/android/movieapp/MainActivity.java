@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
     private int spanCount = 2;
-    private ArrayList<MovieTagObject> mMovieTagObjects = null;
+    private ArrayList<MovieTagObject> mMovieTagObjects = new ArrayList<>();
 
     /**
      * Variable to be used in determining the sort order for the search
@@ -181,11 +180,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * this method takes the content from the favorites database and sends it to the adapter
      */
     private void loadFavoritesFromDatabase() {
-        try {
             mMovieTagObjects.clear();
-        }catch (Exception e){
-            Log.e("MainActivity: ", "mMovieTagObjects = null");
-        }
         Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,null,null,null,null);
         while (cursor.moveToNext()){
             String id = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
