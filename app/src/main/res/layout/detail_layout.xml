@@ -24,7 +24,7 @@
                 android:text="@string/release_date"/>
             <TextView
                 android:id="@+id/release_date"
-                style="@style/TextViewStyle1"
+                style="@style/TextViewStyle2"
                 android:layout_marginStart="8dp"
                 tools:text="release date info"/>
         </LinearLayout>
@@ -38,7 +38,7 @@
                 android:text="@string/voter_average"/>
             <TextView
                 android:id="@+id/voter_average"
-                style="@style/TextViewStyle1"
+                style="@style/TextViewStyle2"
                 android:layout_marginStart="8dp"
                 tools:text="voter average info"/>
         </LinearLayout>
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/tv_movie_detail"
-                style="@style/TextViewStyle1"
+                style="@style/TextViewStyle2"
                 android:padding="8dp"
                 android:text="@string/default_text"
                  />

@@ -73,6 +73,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
 
+
+
         playTrailerIV = (ImageView) findViewById(R.id.play_trailer);
         favoriteIV = (ImageView) findViewById(R.id.favorite);
         detailTV = (TextView) findViewById(R.id.tv_movie_detail);
@@ -86,9 +88,10 @@ public class DetailLayoutActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mTitle = intent.getStringExtra(getString(R.string.title));
         getSupportActionBar().setTitle(mTitle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mID = intent.getStringExtra("id");
         mVoterAverage = intent.getStringExtra(getString(R.string.voter_average));
-        mOverview = getString(plot) + "\n"+ intent.getStringExtra(getString(plot));
+        mOverview =  intent.getStringExtra(getString(plot));
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 

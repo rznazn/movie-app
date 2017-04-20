@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailLayoutActivity"></activity>
+        <activity android:name=".DetailLayoutActivity" android:parentActivityName=".MainActivity"></activity>
 
         <provider
             android:name="com.example.android.movieapp.data.FavoritesProvider"
