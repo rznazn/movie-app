@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.ApiKey;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
+import com.example.android.movieapp.utils.MovieReviewRecyclerViewAdapter;
 import com.example.android.movieapp.utils.NetworkUtils;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
@@ -92,7 +93,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         reviewsRV.setLayoutManager(manager);
         movieReviewRecyclerViewAdapter = new MovieReviewRecyclerViewAdapter();
         reviewsRV.setAdapter(movieReviewRecyclerViewAdapter);
-        
+
 
         posterIV = (ImageView) findViewById(R.id.alert_dialog_imageView);
         posterIV.setAlpha(.40f);
