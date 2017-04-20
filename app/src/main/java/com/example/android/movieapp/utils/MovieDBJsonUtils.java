@@ -3,6 +3,7 @@ package com.example.android.movieapp.utils;
 import android.net.Uri;
 import android.widget.ImageView;
 
+import com.example.android.movieapp.MovieReview;
 import com.example.android.movieapp.MovieTagObject;
 import com.squareup.picasso.Picasso;
 
@@ -93,15 +94,19 @@ public class MovieDBJsonUtils {
     /**
      * create ArrayList from reviews JSON response
      */
-    public static String translateReviewsJSONToString(String reviewsJSON) throws JSONException {
-        String reviews = "";
+    public static ArrayList<MovieReview> translateReviewsJSONToArraylist(String reviewsJSON) throws JSONException {
+        ArrayList<MovieReview> reviews = new ArrayList<>();
         JSONObject jsonObject = new JSONObject(reviewsJSON);
         if (Integer.valueOf(jsonObject.get("total_results").toString()) != 0) {
             JSONArray jsonArray = jsonObject.getJSONArray("results");
 
             for (int i = 0; i < jsonArray.length(); i++) {
+                MovieReview movieReview;
                 JSONObject reviewJSON = jsonArray.getJSONObject(i);
-                reviews = reviews + reviewJSON.getString("author") + ":\n" + reviewJSON.getString("content") + "\n\n";
+                String name = reviewJSON.getString("author");
+                String review =  reviewJSON.getString("content").trim();
+                movieReview = new MovieReview(name, review);
+                reviews.add(movieReview);
             }
             return reviews;
         } else {

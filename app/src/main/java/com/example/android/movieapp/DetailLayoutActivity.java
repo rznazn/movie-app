@@ -11,6 +11,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +28,7 @@ import org.json.JSONException;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import static com.example.android.movieapp.R.string.plot;
 
@@ -43,6 +46,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private ImageView playTrailerIV;
     private ImageView favoriteIV;
     private ImageView reviewsIV;
+    private RecyclerView reviewsRV;
 
     /**
      * variables for using youtube to play trailer.
@@ -60,6 +64,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private String mReleaseDate;
     private String mVoterAverage;
     private String mReviews;
+    private ArrayList<MovieReview> mMovieReviews = new ArrayList<>();
+    private MovieReviewRecyclerViewAdapter movieReviewRecyclerViewAdapter;
 
     /**
      * member Variable for tracking if the selected movie has been favorited
@@ -80,6 +86,14 @@ public class DetailLayoutActivity extends AppCompatActivity {
         voterAverageTV = (TextView) findViewById(R.id.voter_average);
         scrollViewHeaderTV = (TextView) findViewById(R.id.scrollview_header);
         reviewsIV = (ImageView) findViewById(R.id.reviews);
+        reviewsRV = (RecyclerView) findViewById(R.id.review_rv);
+
+        LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        reviewsRV.setLayoutManager(manager);
+        movieReviewRecyclerViewAdapter = new MovieReviewRecyclerViewAdapter();
+        reviewsRV.setAdapter(movieReviewRecyclerViewAdapter);
+        
+
         posterIV = (ImageView) findViewById(R.id.alert_dialog_imageView);
         posterIV.setAlpha(.40f);
 
@@ -106,6 +120,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         new GetMoviesReviewsTask().execute(mID);
 
         detailTV.setText(mOverview);
+        showPlot();
         releaseDateTV.setText(mReleaseDate);
         voterAverageTV.setText(mVoterAverage);
 
@@ -280,13 +295,13 @@ public class DetailLayoutActivity extends AppCompatActivity {
      */
     private void reviewsClickHandler(View v){
         if (mOverviewDisplayed){
-            detailTV.setText(mReviews);
             scrollViewHeaderTV.setText(R.string.reviews);
             mOverviewDisplayed = false;
+            showReviews();
         }else if(!mOverviewDisplayed){
-            detailTV.setText(mOverview);
             scrollViewHeaderTV.setText(R.string.plot);
             mOverviewDisplayed = true;
+            showPlot();
         }
     }
     /**
@@ -320,9 +335,10 @@ public class DetailLayoutActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
                 try {
-                    String response = MovieDBJsonUtils.translateReviewsJSONToString(s);
+                    ArrayList<MovieReview> response = MovieDBJsonUtils.translateReviewsJSONToArraylist(s);
                     if (response != null){
-                        mReviews = response;
+                        mMovieReviews = response;
+                        movieReviewRecyclerViewAdapter.setmMovieReviews(mMovieReviews);
                     } else {
                         mReviews = getResources().getString(R.string.no_reviews);
                     }
@@ -331,6 +347,16 @@ public class DetailLayoutActivity extends AppCompatActivity {
                 }
         }
 
+    }
+
+    private void showReviews(){
+        detailTV.setVisibility(View.GONE);
+        reviewsRV.setVisibility(View.VISIBLE);
+    }
+
+    private void showPlot(){
+        detailTV.setVisibility(View.VISIBLE);
+        reviewsRV.setVisibility(View.GONE);
     }
 
 }
