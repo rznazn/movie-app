@@ -1,7 +1,6 @@
 package com.example.android.movieapp.utils;
 
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.android.movieapp.MovieTagObject;
@@ -95,15 +94,18 @@ public class MovieDBJsonUtils {
      * create ArrayList from reviews JSON response
      */
     public static String translateReviewsJSONToString(String reviewsJSON) throws JSONException {
-        JSONObject jsonObject = new JSONObject(reviewsJSON);
-        JSONArray jsonArray = jsonObject.getJSONArray("results");
         String reviews = "";
+        JSONObject jsonObject = new JSONObject(reviewsJSON);
+        if (Integer.valueOf(jsonObject.get("total_results").toString()) != 0) {
+            JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-        for (int i = 0; i < jsonArray.length(); i++){
-            JSONObject reviewJSON = jsonArray.getJSONObject(i);
-            reviews = reviews + reviewJSON.getString("author") + ":\n" + reviewJSON.getString("content") + "\n\n";
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject reviewJSON = jsonArray.getJSONObject(i);
+                reviews = reviews + reviewJSON.getString("author") + ":\n" + reviewJSON.getString("content") + "\n\n";
+            }
+            return reviews;
+        } else {
+            return null;
         }
-        Log.v("JSON utils", reviews);
-        return reviews;
     }
 }

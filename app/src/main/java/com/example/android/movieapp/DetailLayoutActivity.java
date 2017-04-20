@@ -73,8 +73,6 @@ public class DetailLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_layout);
 
-
-
         playTrailerIV = (ImageView) findViewById(R.id.play_trailer);
         favoriteIV = (ImageView) findViewById(R.id.favorite);
         detailTV = (TextView) findViewById(R.id.tv_movie_detail);
@@ -95,7 +93,6 @@ public class DetailLayoutActivity extends AppCompatActivity {
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 
-//        callCheckIfMovieIsFavoriteAsnctask(mID);
         checkIfMovieIsFavorite();
         callGetYoutubePathAsyncTask(mID);
 
@@ -322,11 +319,16 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            try {
-                mReviews = MovieDBJsonUtils.translateReviewsJSONToString(s);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+                try {
+                    String response = MovieDBJsonUtils.translateReviewsJSONToString(s);
+                    if (response != null){
+                        mReviews = response;
+                    } else {
+                        mReviews = getResources().getString(R.string.no_reviews);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
         }
 
     }
