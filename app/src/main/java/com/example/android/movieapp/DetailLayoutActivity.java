@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.ApiKey;
@@ -89,6 +88,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
         reviewsIV = (ImageView) findViewById(R.id.reviews);
         reviewsRV = (RecyclerView) findViewById(R.id.review_rv);
 
+        /**
+         * instate the recyclerVIew and set layoutManager and custom adapter
+         */
         LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         reviewsRV.setLayoutManager(manager);
         movieReviewRecyclerViewAdapter = new MovieReviewRecyclerViewAdapter();
@@ -108,16 +110,27 @@ public class DetailLayoutActivity extends AppCompatActivity {
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 
+        /***
+         * check if movie is already a favorite
+         */
         checkIfMovieIsFavorite();
+        /**
+         * get and stage the path for the youtube trailer
+         */
         callGetYoutubePathAsyncTask(mID);
 
+        /**
+         * load poster to background
+         */
         try {
             posterIV = MovieDBJsonUtils.loadImageFromJson(posterIV, NetworkUtils.buildImageResUri(mImagePath));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
 
-
+        /**
+         * get the movie's reviews and stage in recyclerVIew
+         */
         new GetMoviesReviewsTask().execute(mID);
 
         detailTV.setText(mOverview);
@@ -266,10 +279,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
             if (rowUri != null ){
                 mMovieIsFavorite = true;
-                Toast.makeText(DetailLayoutActivity.this, "Movie added to favorites", Toast.LENGTH_LONG).show();
             } else {
                 mMovieIsFavorite = false;
-                Toast.makeText(DetailLayoutActivity.this, "failed to add movie", Toast.LENGTH_LONG).show();
             }
             setFavoriteView(mMovieIsFavorite);
         } else if (mMovieIsFavorite){
@@ -282,10 +293,6 @@ public class DetailLayoutActivity extends AppCompatActivity {
             if (rowsDeleted >0 ){
                 mMovieIsFavorite = false;
                 setFavoriteView(mMovieIsFavorite);
-                Toast.makeText(DetailLayoutActivity.this, "Movie deleted from favorites", Toast.LENGTH_LONG).show();
-            } else {
-
-                Toast.makeText(DetailLayoutActivity.this, "failed to remove movie from favorites", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -350,11 +357,17 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * show the reviews window and hide plot
+     */
     private void showReviews(){
         detailTV.setVisibility(View.GONE);
         reviewsRV.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * show plot textView and hide the reviews
+     */
     private void showPlot(){
         detailTV.setVisibility(View.VISIBLE);
         reviewsRV.setVisibility(View.GONE);

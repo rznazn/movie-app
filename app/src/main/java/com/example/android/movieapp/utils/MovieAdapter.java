@@ -153,48 +153,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             detailIntent.putExtra(v.getContext().getString(R.string.image_path), currentMovie.getImagePath());
             v.getContext().startActivity(detailIntent);
 
-//            /**
-//             * get context of the clicked view and the position of the current ArrayList item
-//             * retrieve current list item
-//             */
-//            Context context = v.getContext();
-//            int id = getAdapterPosition();
-//            MovieTagObject currentMovie = mMovieTagObjects.get(id);
-//            /**
-//             * extract data and concatonate string for the detail alertDialog
-//             */
-//            String overViewTextViewData = context.getString(R.string.release_date) + currentMovie.getReleaseDate()
-//                    + "\n" + context.getString(R.string.voter_average) + currentMovie.getVoterAverage()
-//                    + "\n" + context.getString(R.string.plot) + "\n"+ currentMovie.getOverview();
-//            /**
-//             * This AlertDialog will display the movie details
-//             */
-//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//            LayoutInflater inflater = LayoutInflater.from(context);
-//            final View displayView = inflater.inflate(R.layout.detail_layout, null);
-//            final TextView movieOverview= (TextView) displayView.findViewById(R.id.tv_movie_detail);
-//            /**
-//             * use PosterViewSource to get the posterImage from the clicked view to pass into the
-//             * AlertDialog load into the alertDialog layout in posterViewAD
-//             * set posterViewAD visibility to 50% to balance poster/textview visibility
-//             *
-//             * Set message to the movie title
-//             * and set movieOverView text to the concatonated string created above
-//             */
-//            final ImageView posterViewSource = (ImageView) v.findViewById(R.id.iv_grid_item);
-//            final ImageView posterViewAD = (ImageView) displayView.findViewById(R.id.alert_dialog_imageView);
-//            Drawable poster = posterViewSource.getDrawable();
-//            posterViewAD.setBackground(poster);
-//            float visibility = .50f;
-//            posterViewAD.setAlpha(visibility);
-//            movieOverview.setText(overViewTextViewData);
-//            builder.setView(displayView);
-//            builder.setMessage(currentMovie.getTitle());
-//            /**
-//             * build and show alertDialog
-//             */
-//            AlertDialog ad = builder.create();
-//            ad.show();
         }
     }
 

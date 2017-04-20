@@ -86,7 +86,6 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built URI " + url);
 
         return url;
     }
@@ -111,7 +110,6 @@ public class NetworkUtils {
             e.printStackTrace();
         }
 
-        Log.v(TAG, "Built Image URI " + url);
         Uri imageUri = Uri.parse(queryUrl);
         return imageUri;
     }
@@ -161,8 +159,6 @@ public class NetworkUtils {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        Log.v(TAG, "Built Review URI " + url);
 
         return url;
     }

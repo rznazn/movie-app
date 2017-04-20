@@ -18,7 +18,17 @@ import java.util.ArrayList;
 
 public class MovieReviewRecyclerViewAdapter extends RecyclerView.Adapter<MovieReviewRecyclerViewAdapter.MovieReviewHolder>{
 
+    /**
+     * member variable for the adpater's data set
+     */
     private ArrayList<MovieReview> mMovieReviews = new ArrayList<>();
+
+    /**
+     *
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public MovieReviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -29,18 +39,14 @@ public class MovieReviewRecyclerViewAdapter extends RecyclerView.Adapter<MovieRe
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         MovieReviewHolder viewHolder = new MovieReviewHolder(view);
 
-//        viewHolder.reviewerName.setText("ViewHolder index: " + viewHolderCount);
-//
-//        int backgroundColorForViewHolder = ColorUtils
-//                .getViewHolderBackgroundColorFromInstance(context, viewHolderCount);
-//        viewHolder.itemView.setBackgroundColor(backgroundColorForViewHolder);
-//
-//        viewHolderCount++;
-//        Log.d(TAG, "onCreateViewHolder: number of ViewHolders created: "
-//                + viewHolderCount);
         return viewHolder;
     }
 
+    /**
+     * bind movie review object parts to the respective textviews
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(MovieReviewHolder holder, int position) {
         MovieReview movieReview = mMovieReviews.get(position);
@@ -50,17 +56,21 @@ public class MovieReviewRecyclerViewAdapter extends RecyclerView.Adapter<MovieRe
         holder.reviewText.setText(reviewNameForDisplay);
     }
 
-
+    /**
+     *
+     * @return the size of the data set
+     */
     @Override
     public int getItemCount() {
         return mMovieReviews.size();
     }
 
+    /**
+     * view holder object
+     */
     class MovieReviewHolder extends RecyclerView.ViewHolder {
 
-        // Will display the position in the list, ie 0 through getItemCount() - 1
         TextView reviewerName;
-        // Will display which ViewHolder is displaying this data
         TextView reviewText;
 
         public MovieReviewHolder(View itemView) {
@@ -72,6 +82,11 @@ public class MovieReviewRecyclerViewAdapter extends RecyclerView.Adapter<MovieRe
 
 
     }
+
+    /**
+     *
+     * @param movieReviews instate a new data set and notify adapter of the change
+     */
     public void setmMovieReviews(ArrayList<MovieReview> movieReviews){
         mMovieReviews = movieReviews;
         notifyDataSetChanged();
