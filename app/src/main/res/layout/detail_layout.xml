@@ -81,6 +81,14 @@
                 android:layout_marginStart="16dp"
                 android:background="@drawable/youtube_social_circle_red_48px"
                 android:gravity="center" />
+            <ImageView
+                android:id="@+id/share_trailer"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/ic_share_black_24dp"
+                android:gravity="center"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/play_trailer" />
 
             <ImageView
                 android:id="@+id/favorite"

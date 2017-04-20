@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +47,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private ImageView playTrailerIV;
     private ImageView favoriteIV;
     private ImageView reviewsIV;
+    private ImageView shareIV;
     private RecyclerView reviewsRV;
 
     /**
@@ -53,6 +55,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
      */
     private static final String YOUTUBE_API_KEY = ApiKey.YOUTUBE_API_KEY;
     private String mYoutubePath;
+    private String mYoutubeURL;
 
     /**
      * member variables for the movie object parts
@@ -86,6 +89,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         voterAverageTV = (TextView) findViewById(R.id.voter_average);
         scrollViewHeaderTV = (TextView) findViewById(R.id.scrollview_header);
         reviewsIV = (ImageView) findViewById(R.id.reviews);
+        shareIV = (ImageView) findViewById(R.id.share_trailer);
         reviewsRV = (RecyclerView) findViewById(R.id.review_rv);
 
         /**
@@ -165,6 +169,19 @@ public class DetailLayoutActivity extends AppCompatActivity {
                 reviewsClickHandler(v);
             }
         });
+        /**
+         * clickListener to share the youtube trailer url
+         */
+        shareIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareCompat.IntentBuilder.from(DetailLayoutActivity.this)
+                        .setChooserTitle("share youtube trailer")
+                        .setType("text/plain")
+                        .setText(mYoutubeURL)
+                        .startChooser();
+            }
+        });
 
     }
 
@@ -226,7 +243,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             mYoutubePath = s;
-
+            mYoutubeURL = "https://www.youtube.com/watch?v=" + s;
         }
     }
 
