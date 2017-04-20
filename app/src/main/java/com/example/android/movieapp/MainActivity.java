@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 showErrorScreen();
             }else {
                 try {
-                    mMovieTagObjects = MovieDBJsonUtils.translateStringToArrayList(s);
+                    mMovieTagObjects = MovieDBJsonUtils.translateMoviesDBJSONToArrayList(s);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

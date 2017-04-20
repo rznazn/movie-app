@@ -22,6 +22,8 @@ import com.example.android.movieapp.utils.MovieDBJsonUtils;
 import com.example.android.movieapp.utils.NetworkUtils;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
+import org.json.JSONException;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -54,11 +56,13 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private String mImagePath;
     private String mReleaseDate;
     private String mVoterAverage;
+    private String mReviews;
 
     /**
      * member Variable for tracking if the selected movie has been favorited
      */
     private boolean mMovieIsFavorite;
+    private boolean mOverviewDisplayed = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +96,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+
+        new GetMoviesReviewsTask().execute(mID);
         String overViewTextViewData = getString(R.string.release_date) + mReleaseDate
                     + "\n" + getString(R.string.voter_average) + mVoterAverage
                     + "\n" + getString(plot) + "\n"+ mOverview;
@@ -268,7 +274,13 @@ public class DetailLayoutActivity extends AppCompatActivity {
      * reviews click handler
      */
     private void reviewsClickHandler(View v){
-        new GetMoviesReviewsTask().execute(mID);
+        if (mOverviewDisplayed){
+            detailTV.setText(mReviews);
+            mOverviewDisplayed = false;
+        }else if(!mOverviewDisplayed){
+            detailTV.setText(mOverview);
+            mOverviewDisplayed = true;
+        }
     }
     /**
      * Async Task the makes network request to get movie reviews
@@ -300,7 +312,11 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-           return;
+            try {
+                mReviews = MovieDBJsonUtils.translateReviewsJSONToString(s);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
     }

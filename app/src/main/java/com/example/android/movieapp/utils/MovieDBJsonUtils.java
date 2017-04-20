@@ -1,6 +1,7 @@
 package com.example.android.movieapp.utils;
 
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.example.android.movieapp.MovieTagObject;
@@ -26,7 +27,7 @@ public class MovieDBJsonUtils {
      * @return an Arraylist of the movies from the query
      * @throws JSONException
      */
-    public static ArrayList<MovieTagObject> translateStringToArrayList(String jsonString) throws JSONException {
+    public static ArrayList<MovieTagObject> translateMoviesDBJSONToArrayList(String jsonString) throws JSONException {
 
         /**
          * create the arraylist to fill
@@ -88,5 +89,21 @@ public class MovieDBJsonUtils {
     public static ImageView loadImageFromJson(ImageView view, Uri uri){
         Picasso.with(view.getContext()).load(uri).into(view);
         return view;
+    }
+
+    /**
+     * create ArrayList from reviews JSON response
+     */
+    public static String translateReviewsJSONToString(String reviewsJSON) throws JSONException {
+        JSONObject jsonObject = new JSONObject(reviewsJSON);
+        JSONArray jsonArray = jsonObject.getJSONArray("results");
+        String reviews = "";
+
+        for (int i = 0; i < jsonArray.length(); i++){
+            JSONObject reviewJSON = jsonArray.getJSONObject(i);
+            reviews = reviews + reviewJSON.getString("author") + ":\n" + reviewJSON.getString("content") + "\n\n";
+        }
+        Log.v("JSON utils", reviews);
+        return reviews;
     }
 }
