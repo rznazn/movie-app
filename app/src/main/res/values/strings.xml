@@ -17,4 +17,5 @@
     <string name="no_trailer">No trailer available for this movie.</string>
     <string name="favorite">favorite</string>
     <string name="popular">popular</string>
+    <string name="reviews">Reviews:</string>
 </resources>

@@ -36,6 +36,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
      */
 
     private TextView detailTV;
+    private TextView releaseDateTV;
+    private TextView voterAverageTV;
+    private TextView scrollViewHeaderTV;
     private ImageView posterIV;
     private ImageView playTrailerIV;
     private ImageView favoriteIV;
@@ -73,6 +76,9 @@ public class DetailLayoutActivity extends AppCompatActivity {
         playTrailerIV = (ImageView) findViewById(R.id.play_trailer);
         favoriteIV = (ImageView) findViewById(R.id.favorite);
         detailTV = (TextView) findViewById(R.id.tv_movie_detail);
+        releaseDateTV = (TextView)findViewById(R.id.release_date);
+        voterAverageTV = (TextView) findViewById(R.id.voter_average);
+        scrollViewHeaderTV = (TextView) findViewById(R.id.scrollview_header);
         reviewsIV = (ImageView) findViewById(R.id.reviews);
         posterIV = (ImageView) findViewById(R.id.alert_dialog_imageView);
         posterIV.setAlpha(.40f);
@@ -82,7 +88,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(mTitle);
         mID = intent.getStringExtra("id");
         mVoterAverage = intent.getStringExtra(getString(R.string.voter_average));
-        mOverview = intent.getStringExtra(getString(plot));
+        mOverview = getString(plot) + "\n"+ intent.getStringExtra(getString(plot));
         mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
         mImagePath = intent.getStringExtra(getString(R.string.image_path));
 
@@ -98,11 +104,10 @@ public class DetailLayoutActivity extends AppCompatActivity {
 
 
         new GetMoviesReviewsTask().execute(mID);
-        String overViewTextViewData = getString(R.string.release_date) + mReleaseDate
-                    + "\n" + getString(R.string.voter_average) + mVoterAverage
-                    + "\n" + getString(plot) + "\n"+ mOverview;
 
-        detailTV.setText(overViewTextViewData);
+        detailTV.setText(mOverview);
+        releaseDateTV.setText(mReleaseDate);
+        voterAverageTV.setText(mVoterAverage);
 
         /**
          * clickListener to launch movie trailer
@@ -276,9 +281,11 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private void reviewsClickHandler(View v){
         if (mOverviewDisplayed){
             detailTV.setText(mReviews);
+            scrollViewHeaderTV.setText(R.string.reviews);
             mOverviewDisplayed = false;
         }else if(!mOverviewDisplayed){
             detailTV.setText(mOverview);
+            scrollViewHeaderTV.setText(R.string.plot);
             mOverviewDisplayed = true;
         }
     }

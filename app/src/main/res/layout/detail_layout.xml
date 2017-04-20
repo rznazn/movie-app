@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/alert_dialog_imageView"
@@ -14,6 +15,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/TextViewStyle1"
+                android:text="@string/release_date"/>
+            <TextView
+                android:id="@+id/release_date"
+                style="@style/TextViewStyle1"
+                android:layout_marginStart="8dp"
+                tools:text="release date info"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                style="@style/TextViewStyle1"
+                android:text="@string/voter_average"/>
+            <TextView
+                android:id="@+id/voter_average"
+                style="@style/TextViewStyle1"
+                android:layout_marginStart="8dp"
+                tools:text="voter average info"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/scrollview_header"
+            style="@style/TextViewStyle1"
+            android:text="@string/plot"/>
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -22,12 +54,10 @@
 
             <TextView
                 android:id="@+id/tv_movie_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/TextViewStyle1"
                 android:padding="8dp"
                 android:text="@string/default_text"
-                android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                 />
         </ScrollView>
 
         <RelativeLayout
