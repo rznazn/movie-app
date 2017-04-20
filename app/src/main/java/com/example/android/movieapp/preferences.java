@@ -6,4 +6,6 @@ package com.example.android.movieapp;
 
 public class preferences {
     public static boolean attributionShown = false;
+    public static String sortPreference = "popular";
+
 }
