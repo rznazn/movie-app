@@ -62,6 +62,10 @@ public class FavoritesProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
+         String selectionStatement = null;
+        if (selection != null && selection != ""){
+            selectionStatement = selection + " = ? ";
+        }
         Cursor cursor;
         int uriMatch = mUriMatcher.match(uri);
         SQLiteDatabase database = mDBHelper.getReadableDatabase();
@@ -69,7 +73,7 @@ public class FavoritesProvider extends ContentProvider {
             case FAVORITES:
             cursor = database.query(favoritesContract.favoritesEntry.TABLE_NAME,
                     projection,
-                    selection + " = ? ",
+                    selectionStatement,
                     selectionArgs,
                     null,
                     null,
