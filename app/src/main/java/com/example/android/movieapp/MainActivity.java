@@ -241,10 +241,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             @Override
             protected void onStartLoading() {
-                if (!preferences.mPopularMovies.isEmpty()) {
+                if (!preferences.mPopularMovies.isEmpty() && sortPreference == MOST_POPULAR) {
                     Log.v("main activity ", "net request saved");
                     deliverResult(preferences.mPopularMovies);
-                }else  if (!preferences.mHighestRatedMovies.isEmpty()) {
+                }else  if (!preferences.mHighestRatedMovies.isEmpty() && sortPreference == HIGH_RATED) {
                     Log.v("main activity ", "net request saved");
                     deliverResult(preferences.mHighestRatedMovies);
                 }else {
