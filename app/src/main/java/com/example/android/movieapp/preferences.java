@@ -10,5 +10,6 @@ public class preferences {
     public static boolean attributionShown = false;
     public static String sortPreference = "popular";
     public static ArrayList<MovieTagObject> mPopularMovies = new ArrayList<>();
+    public static ArrayList<MovieTagObject> mHighestRatedMovies = new ArrayList<>();
 
 }

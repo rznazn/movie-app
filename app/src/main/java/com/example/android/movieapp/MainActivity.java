@@ -67,7 +67,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private LoaderManager mLoaderManager;
     private Loader mLoader;
     private static final int POPULAR_LOADER_ID = 1;
+    private static final int HIGHEST_RATED_LOADER_ID = 2;
     private static final String SEARCH_PREFERENCE= "search preference";
+
+    Bundle highRatedBundle = new Bundle();
+    Bundle popularBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,19 +106,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorScreen = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
-//        if (sortPreference != FAVORITE) {
-//            callAsyncTask();
-//        }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
         mMovieAdapter = new MovieAdapter(this, mMovieTagObjects);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         mLoaderManager = getSupportLoaderManager();
+
         mLoader = mLoaderManager.getLoader(POPULAR_LOADER_ID);
-        Bundle popularBundle = new Bundle();
         popularBundle.putString(SEARCH_PREFERENCE, MOST_POPULAR);
         mLoaderManager.initLoader(POPULAR_LOADER_ID,popularBundle,this);
+
+        mLoader = mLoaderManager.getLoader(HIGHEST_RATED_LOADER_ID);
+        highRatedBundle.putString(SEARCH_PREFERENCE, HIGH_RATED);
     }
 
     @Override
@@ -125,11 +129,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 loadFavoritesFromDatabase();
                 break;
             case HIGH_RATED:
-                callAsyncTask();
+                showProgressBar();
+                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID,highRatedBundle,this);
                 break;
-//            case MOST_POPULAR:
-//                callAsyncTask();
-//                break;
+            case MOST_POPULAR:
+                showProgressBar();
+                mLoaderManager.restartLoader(POPULAR_LOADER_ID,popularBundle,this);
+                break;
         }
     }
 
@@ -179,13 +185,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
                 sortPreference = MOST_POPULAR;
+                mMovieAdapter.setMovieData(preferences.mPopularMovies);
+                mLoaderManager.restartLoader(POPULAR_LOADER_ID,popularBundle,this);
                 getSupportActionBar().setTitle(R.string.popular);
-                callAsyncTask();
                 break;
             case R.id.action_sort_by_highest_rated:
                 sortPreference = HIGH_RATED;
+                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID,highRatedBundle,this);
                 getSupportActionBar().setTitle(R.string.highest_rated);
-                callAsyncTask();
                 break;
             case R.id.action_show_favorites:
                 sortPreference = FAVORITE;
@@ -229,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public Loader<ArrayList<MovieTagObject>> onCreateLoader(final int id, final Bundle args) {
+
         return new AsyncTaskLoader<ArrayList<MovieTagObject>>(this) {
 
             @Override
@@ -236,6 +244,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 if (!preferences.mPopularMovies.isEmpty()) {
                     Log.v("main activity ", "net request saved");
                     deliverResult(preferences.mPopularMovies);
+                }else  if (!preferences.mHighestRatedMovies.isEmpty()) {
+                    Log.v("main activity ", "net request saved");
+                    deliverResult(preferences.mHighestRatedMovies);
                 }else {
                     forceLoad();
                 }
@@ -271,9 +282,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             showErrorScreen();
         }else if (loader.getId() == POPULAR_LOADER_ID){
             preferences.mPopularMovies = data;
-            mMovieAdapter.setMovieData(preferences.mPopularMovies);
-            showRecyclerView();
+        }else if (loader.getId() == HIGHEST_RATED_LOADER_ID){
+            preferences.mHighestRatedMovies = data;
         }
+            mMovieAdapter.setMovieData(data);
+            showRecyclerView();
+
     }
 
     @Override
