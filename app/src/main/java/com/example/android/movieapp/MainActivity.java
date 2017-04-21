@@ -1,7 +1,10 @@
 package com.example.android.movieapp;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -216,9 +219,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             String imagePath = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH));
             String releaseDate = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
             String voterAverage = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
+            Bitmap poster = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.ic_done_black_24dp);
 
-
-            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
+            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, poster));
         }
         cursor.close();
         mMovieAdapter.setMovieData(mMovieTagObjects);
@@ -241,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
             @Override
             protected void onStartLoading() {
+                showProgressBar();
                 if (!preferences.mPopularMovies.isEmpty() && sortPreference == MOST_POPULAR) {
                     Log.v("main activity ", "net request saved");
                     deliverResult(preferences.mPopularMovies);

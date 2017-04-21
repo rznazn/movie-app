@@ -1,16 +1,22 @@
 package com.example.android.movieapp.utils;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.ImageView;
 
 import com.example.android.movieapp.MovieReview;
 import com.example.android.movieapp.MovieTagObject;
+import com.example.android.movieapp.R;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -48,11 +54,22 @@ public class MovieDBJsonUtils {
             String imagePath = object.getString("poster_path");
             String releaseDate = object.getString("release_date");
             String voterAverage = object.getString("vote_average");
+            Bitmap myBitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.ic_done_black_24dp);
+            try {
+                URL url  = new URL(NetworkUtils.buildImageResUri(imagePath).toString());
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+               myBitmap = BitmapFactory.decodeStream(input);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             /**
              * set extracted JSON values to the MovieTagObject
              */
-            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage));
+            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, myBitmap));
 
         }
         return movieTagObjects;

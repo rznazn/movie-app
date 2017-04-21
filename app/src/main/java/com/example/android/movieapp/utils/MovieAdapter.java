@@ -2,6 +2,7 @@ package com.example.android.movieapp.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import com.example.android.movieapp.DetailLayoutActivity;
 import com.example.android.movieapp.MovieTagObject;
 import com.example.android.movieapp.R;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -76,14 +76,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          * by the NetworkUtils method into the ImageView, posterImage.
          * then set that value to the mPosterImageView from the viewholder object.
          */
-        String imagePath = currentMovie.getImagePath();
-        try {
-            ImageView posterImage = MovieDBJsonUtils.loadImageFromJson(holder.mPosterImageView,
-                    NetworkUtils.buildImageResUri(imagePath));
-            holder.mPosterImageView.equals(posterImage);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        Bitmap bitmap = currentMovie.getPosterImage();
+        holder.mPosterImageView.setImageBitmap(bitmap);
+//        String imagePath = currentMovie.getImagePath();
+//        try {
+//            ImageView posterImage = MovieDBJsonUtils.loadImageFromJson(holder.mPosterImageView,
+//                    NetworkUtils.buildImageResUri(imagePath));
+//            holder.mPosterImageView.equals(posterImage);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
         holder.mIdTextView.setText(currentMovie.getTitle());
 
     }
