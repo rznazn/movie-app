@@ -6,10 +6,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,7 +37,8 @@ import static com.example.android.movieapp.preferences.sortPreference;
  * Application Main Activity
  */
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler,
+        LoaderManager.LoaderCallbacks<ArrayList<MovieTagObject>>{
 
 
     /**
@@ -54,6 +59,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private static final String FAVORITE = "favorite";
     private static final String HIGH_RATED = "top_rated";
     private static final String MOST_POPULAR = "popular";
+
+    /**
+     * Loader variables
+     */
+
+    private LoaderManager mLoaderManager;
+    private Loader mLoader;
+    private static final int POPULAR_LOADER_ID = 1;
+    private static final String SEARCH_PREFERENCE= "search preference";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,13 +102,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorScreen = (TextView) findViewById(R.id.tv_error_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
-        if (sortPreference != FAVORITE) {
-            callAsyncTask();
-        }
+//        if (sortPreference != FAVORITE) {
+//            callAsyncTask();
+//        }
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
         mMovieAdapter = new MovieAdapter(this, mMovieTagObjects);
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        mLoaderManager = getSupportLoaderManager();
+        mLoader = mLoaderManager.getLoader(POPULAR_LOADER_ID);
+        Bundle popularBundle = new Bundle();
+        popularBundle.putString(SEARCH_PREFERENCE, MOST_POPULAR);
+        mLoaderManager.initLoader(POPULAR_LOADER_ID,popularBundle,this);
     }
 
     @Override
@@ -107,9 +127,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             case HIGH_RATED:
                 callAsyncTask();
                 break;
-            case MOST_POPULAR:
-                callAsyncTask();
-                break;
+//            case MOST_POPULAR:
+//                callAsyncTask();
+//                break;
         }
     }
 
@@ -205,6 +225,60 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         /**
          * This method is defined in the MovieAdapter class
          */
+    }
+
+    @Override
+    public Loader<ArrayList<MovieTagObject>> onCreateLoader(final int id, final Bundle args) {
+        return new AsyncTaskLoader<ArrayList<MovieTagObject>>(this) {
+
+            @Override
+            protected void onStartLoading() {
+                if (!preferences.mPopularMovies.isEmpty()) {
+                    Log.v("main activity ", "net request saved");
+                    deliverResult(preferences.mPopularMovies);
+                }else {
+                    forceLoad();
+                }
+            }
+
+            @Override
+            public ArrayList<MovieTagObject> loadInBackground() {
+                ArrayList<MovieTagObject> movieTagObjects = new ArrayList<>();
+                if (args.isEmpty()) {
+                    return null;
+                }
+
+                String searchBy = args.getString(SEARCH_PREFERENCE);
+                URL movieUrl = NetworkUtils.buildUrl(searchBy);
+
+                try {
+                    String response = NetworkUtils.getResponseFromHttpUrl(movieUrl);
+                    movieTagObjects = MovieDBJsonUtils.translateMoviesDBJSONToArrayList(response);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    return movieTagObjects;
+
+
+            }
+        };
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<MovieTagObject>> loader, ArrayList<MovieTagObject> data) {
+        if (data == null){
+            showErrorScreen();
+        }else if (loader.getId() == POPULAR_LOADER_ID){
+            preferences.mPopularMovies = data;
+            mMovieAdapter.setMovieData(preferences.mPopularMovies);
+            showRecyclerView();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<MovieTagObject>> loader) {
+
     }
 
     /**

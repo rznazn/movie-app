@@ -1,5 +1,7 @@
 package com.example.android.movieapp;
 
+import java.util.ArrayList;
+
 /**
  * Created by sport on 3/12/2017.
  */
@@ -7,5 +9,6 @@ package com.example.android.movieapp;
 public class preferences {
     public static boolean attributionShown = false;
     public static String sortPreference = "popular";
+    public static ArrayList<MovieTagObject> mPopularMovies = new ArrayList<>();
 
 }
