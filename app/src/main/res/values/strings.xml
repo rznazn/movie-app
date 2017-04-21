@@ -20,4 +20,5 @@
     <string name="reviews">Reviews:</string>
     <string name="no_reviews">No reviews available.</string>
     <string name="no_review">No review available</string>
+    <string name="poster_image">poster image</string>
 </resources>

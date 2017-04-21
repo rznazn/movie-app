@@ -3,6 +3,8 @@ package com.example.android.movieapp.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +69,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
+
         /**
          * currentMovie get current object from arraylist
          */
@@ -76,16 +79,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          * by the NetworkUtils method into the ImageView, posterImage.
          * then set that value to the mPosterImageView from the viewholder object.
          */
-        Bitmap bitmap = currentMovie.getPosterImage();
+        byte[] posterByteArray = currentMovie.getPosterImage();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(posterByteArray,0,posterByteArray.length);
         holder.mPosterImageView.setImageBitmap(bitmap);
-//        String imagePath = currentMovie.getImagePath();
-//        try {
-//            ImageView posterImage = MovieDBJsonUtils.loadImageFromJson(holder.mPosterImageView,
-//                    NetworkUtils.buildImageResUri(imagePath));
-//            holder.mPosterImageView.equals(posterImage);
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
         holder.mIdTextView.setText(currentMovie.getTitle());
 
     }
@@ -145,14 +141,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
 
-            Intent detailIntent = new Intent(v.getContext(), DetailLayoutActivity.class);
             MovieTagObject currentMovie = mMovieTagObjects.get(getAdapterPosition());
-            detailIntent.putExtra("id", currentMovie.getId());
-            detailIntent.putExtra(v.getContext().getString(R.string.title),currentMovie.getTitle());
-            detailIntent.putExtra(v.getContext().getString(R.string.release_date), currentMovie.getReleaseDate());
-            detailIntent.putExtra(v.getContext().getString(R.string.voter_average), currentMovie.getVoterAverage());
-            detailIntent.putExtra(v.getContext().getString(R.string.plot), currentMovie.getOverview());
-            detailIntent.putExtra(v.getContext().getString(R.string.image_path), currentMovie.getImagePath());
+
+            Intent detailIntent = new Intent(v.getContext(), DetailLayoutActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", getAdapterPosition());
+            bundle.putInt("movieId", Integer.valueOf(currentMovie.getId()));
+            detailIntent.putExtras(bundle);
+
             v.getContext().startActivity(detailIntent);
 
         }

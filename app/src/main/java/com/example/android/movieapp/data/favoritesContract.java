@@ -43,6 +43,7 @@ public class favoritesContract {
         public static final String COLUMN_MOVIE_IMAGE_PATH = "imagePath";
         public static final String COLUMN_MOVIE_RELEASE_DATE = "releaseDate";
         public static final String COLUMN_MOVIE_VOTER_AVERAGE = "voterAverage";
+        public static final String COLUMN_MOVIE_POSTER_BLOB = "posterblob";
 
     }
 }

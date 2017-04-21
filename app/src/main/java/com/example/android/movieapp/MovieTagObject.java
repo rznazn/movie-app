@@ -1,7 +1,5 @@
 package com.example.android.movieapp;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by sport on 3/11/2017.
  * This Custom Object stores the relevant values from the MovieDb Json
@@ -17,7 +15,7 @@ public class MovieTagObject extends Object{
     private String mImagePath;
     private String mReleaseDate;
     private String mVoterAverage;
-    private Bitmap mPosterImage;
+    private byte[] mPosterImage;
 
     /**
      * @param id Id of the movie in the movieDB api
@@ -28,7 +26,7 @@ public class MovieTagObject extends Object{
      * @param voterAverage of the movie
      */
     public MovieTagObject(String id, String title, String overview, String imagePath, String releaseDate,
-                          String voterAverage, Bitmap posterImage){
+                          String voterAverage, byte[] posterImage){
         mId = id;
         mTitle = title;
         mOverview = overview;
@@ -58,5 +56,5 @@ public class MovieTagObject extends Object{
         return mReleaseDate;
     }
     public String getVoterAverage(){ return mVoterAverage; }
-    public Bitmap getPosterImage(){return mPosterImage;}
+    public byte[] getPosterImage(){return mPosterImage;}
 }

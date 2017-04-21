@@ -30,7 +30,8 @@ public class FavoritesDBHelper extends SQLiteOpenHelper {
                 favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL, " +
                 favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH + " TEXT NOT NULL, " +
                 favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE + " TEXT NOT NULL, " +
-                favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE + " TEXT NOT NULL" +
+                favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE + " TEXT NOT NULL, " +
+                favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB + " BLOB " +
                 "); ";
 
         db.execSQL(SQL_CREATE_FAVORITES_TABLE);

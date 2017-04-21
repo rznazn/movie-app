@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -27,11 +29,8 @@ import com.google.android.youtube.player.YouTubeStandalonePlayer;
 
 import org.json.JSONException;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-
-import static com.example.android.movieapp.R.string.plot;
 
 public class DetailLayoutActivity extends AppCompatActivity {
 
@@ -60,6 +59,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     /**
      * member variables for the movie object parts
      */
+    private MovieTagObject mCurrentMovie;
     private String mID;
     private String mTitle;
     private String mOverview;
@@ -67,6 +67,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
     private String mReleaseDate;
     private String mVoterAverage;
     private String mReviews;
+    private byte[] mPoster;
     private ArrayList<MovieReview> mMovieReviews = new ArrayList<>();
     private MovieReviewRecyclerViewAdapter movieReviewRecyclerViewAdapter;
 
@@ -105,19 +106,49 @@ public class DetailLayoutActivity extends AppCompatActivity {
         posterIV.setAlpha(.40f);
 
         Intent intent = getIntent();
-        mTitle = intent.getStringExtra(getString(R.string.title));
-        getSupportActionBar().setTitle(mTitle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mID = intent.getStringExtra("id");
-        mVoterAverage = intent.getStringExtra(getString(R.string.voter_average));
-        mOverview =  intent.getStringExtra(getString(plot));
-        mReleaseDate = intent.getStringExtra(getString(R.string.release_date));
-        mImagePath = intent.getStringExtra(getString(R.string.image_path));
-
+        Bundle intentBundle = intent.getExtras();
+        int movieArrayId = intentBundle.getInt("id");
+        int movieID = intentBundle.getInt("movieId");
+        if (preferences.sortPreference == MainActivity.HIGH_RATED){
+            mCurrentMovie = preferences.mHighestRatedMovies.get(movieArrayId);
+        }else if (preferences.sortPreference == MainActivity.MOST_POPULAR){
+            mCurrentMovie = preferences.mPopularMovies.get(movieArrayId);
+        }else if (preferences.sortPreference == MainActivity.FAVORITE){
+            String[] args = {String.valueOf(movieID)};
+            Cursor currentMovieCursur = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,
+                    null,
+                    favoritesContract.favoritesEntry.COLUMN_MOVIE_ID,
+                    args,
+                    null);
+            if(currentMovieCursur.moveToFirst()){
+                String id = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
+                String title = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME));
+                String overview = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW));
+                String posterPath = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH));
+                String voterAverage = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
+                String releaseDate = currentMovieCursur.getString(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
+                byte[] posterImage = currentMovieCursur.getBlob(currentMovieCursur.
+                        getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB));
+                mCurrentMovie = new MovieTagObject(id,title,overview,posterPath,releaseDate,voterAverage,posterImage);
+            }
+        }
+        mID = mCurrentMovie.getId();
+        mTitle = mCurrentMovie.getTitle();
+        mOverview = mCurrentMovie.getOverview();
+        mImagePath = mCurrentMovie.getImagePath();
+        mVoterAverage = mCurrentMovie.getVoterAverage();
+        mReleaseDate = mCurrentMovie.getReleaseDate();
         /***
          * check if movie is already a favorite
          */
         checkIfMovieIsFavorite();
+
         /**
          * get and stage the path for the youtube trailer
          */
@@ -126,12 +157,11 @@ public class DetailLayoutActivity extends AppCompatActivity {
         /**
          * load poster to background
          */
-        try {
-            posterIV = MovieDBJsonUtils.loadImageFromJson(posterIV, NetworkUtils.buildImageResUri(mImagePath));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
+        mPoster = mCurrentMovie.getPosterImage();
+        Bitmap posterBitmap = BitmapFactory.decodeByteArray(mPoster,
+                0,
+                mPoster.length);
+        posterIV.setImageBitmap(posterBitmap);
         /**
          * get the movie's reviews and stage in recyclerVIew
          */
@@ -291,7 +321,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH, mImagePath);
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE, mReleaseDate);
             contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE, mVoterAverage);
-
+            contentValues.put(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB, mPoster);
             Uri rowUri = getContentResolver().insert(favoritesContract.favoritesEntry.CONTENT_URI, contentValues);
 
             if (rowUri != null ){

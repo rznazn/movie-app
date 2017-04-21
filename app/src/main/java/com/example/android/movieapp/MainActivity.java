@@ -1,13 +1,6 @@
 package com.example.android.movieapp;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
@@ -28,8 +21,6 @@ import com.example.android.movieapp.data.favoritesContract;
 import com.example.android.movieapp.utils.MovieAdapter;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
 import com.example.android.movieapp.utils.NetworkUtils;
-
-import org.json.JSONException;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -59,9 +50,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Variable to be used in determining the sort order for the search
      */
     public static String response = "failed";
-    private static final String FAVORITE = "favorite";
-    private static final String HIGH_RATED = "top_rated";
-    private static final String MOST_POPULAR = "popular";
+    public static final String FAVORITE = "favorite";
+    public static final String HIGH_RATED = "top_rated";
+    public static final String MOST_POPULAR = "popular";
 
     /**
      * Loader variables
@@ -219,9 +210,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             String imagePath = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH));
             String releaseDate = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
             String voterAverage = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
-            Bitmap poster = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.ic_done_black_24dp);
+            byte[] byteArray = cursor.getBlob(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB));
 
-            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, poster));
+            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, byteArray));
         }
         cursor.close();
         mMovieAdapter.setMovieData(mMovieTagObjects);
@@ -298,69 +289,5 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public void onLoaderReset(Loader<ArrayList<MovieTagObject>> loader) {
 
     }
-
-    /**
-     * Async Task the makes network request to get movie data
-     */
-    public class GetMoviesTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            if (params.length == 0) {
-                return null;
-            }
-
-            String sortBy = params[0];
-            URL movieUrl = NetworkUtils.buildUrl(sortBy);
-
-            try {
-                response = NetworkUtils
-                        .getResponseFromHttpUrl(movieUrl);
-
-                return response;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (s == null){
-                showErrorScreen();
-            }else {
-                try {
-                    mMovieTagObjects = MovieDBJsonUtils.translateMoviesDBJSONToArrayList(s);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                mMovieAdapter.setMovieData(mMovieTagObjects);
-                showRecyclerView();
-            }
-        }
-
-    }
-
-    /**
-     * check connectivity and adjust visible view prior to starting the async task
-     * show error screen if there is no connectivity
-     */
-    private void callAsyncTask (){
-        showProgressBar();
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()){
-            new GetMoviesTask().execute(sortPreference);
-
-        }else {
-            showErrorScreen();
-        }
-    }
-
 
 }

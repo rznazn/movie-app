@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -55,6 +56,7 @@ public class MovieDBJsonUtils {
             String releaseDate = object.getString("release_date");
             String voterAverage = object.getString("vote_average");
             Bitmap myBitmap = BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.ic_done_black_24dp);
+            byte[] byteArray = new byte[0];
             try {
                 URL url  = new URL(NetworkUtils.buildImageResUri(imagePath).toString());
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -62,6 +64,9 @@ public class MovieDBJsonUtils {
                 connection.connect();
                 InputStream input = connection.getInputStream();
                myBitmap = BitmapFactory.decodeStream(input);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                myBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byteArray = stream.toByteArray();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -69,7 +74,7 @@ public class MovieDBJsonUtils {
             /**
              * set extracted JSON values to the MovieTagObject
              */
-            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, myBitmap));
+            movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, byteArray));
 
         }
         return movieTagObjects;
