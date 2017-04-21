@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +24,8 @@ import com.example.android.movieapp.utils.NetworkUtils;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static com.example.android.movieapp.preferences.mHighestRatedMovies;
+import static com.example.android.movieapp.preferences.mPopularMovies;
 import static com.example.android.movieapp.preferences.sortPreference;
 
 /**
@@ -32,7 +33,7 @@ import static com.example.android.movieapp.preferences.sortPreference;
  */
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler,
-        LoaderManager.LoaderCallbacks<ArrayList<MovieTagObject>>{
+        LoaderManager.LoaderCallbacks<ArrayList<MovieTagObject>> {
 
 
     /**
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     /**
      * Variable to be used in determining the sort order for the search
      */
-    public static String response = "failed";
     public static final String FAVORITE = "favorite";
     public static final String HIGH_RATED = "top_rated";
     public static final String MOST_POPULAR = "popular";
@@ -59,13 +59,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
 
     private LoaderManager mLoaderManager;
-    private Loader mLoader;
+    private Loader mPopularLoader;
+    private Loader mHighestRatedLoader;
+    private Loader mFavoritesLoader;
     private static final int POPULAR_LOADER_ID = 1;
     private static final int HIGHEST_RATED_LOADER_ID = 2;
-    private static final String SEARCH_PREFERENCE= "search preference";
+    private static final int FAVORITES_LOADER_ID = 3;
+    private static final String SEARCH_PREFERENCE = "search preference";
 
     Bundle highRatedBundle = new Bundle();
     Bundle popularBundle = new Bundle();
+    Bundle favoritesBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,28 +111,35 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mLoaderManager = getSupportLoaderManager();
 
-        mLoader = mLoaderManager.getLoader(POPULAR_LOADER_ID);
+        mPopularLoader = mLoaderManager.getLoader(POPULAR_LOADER_ID);
         popularBundle.putString(SEARCH_PREFERENCE, MOST_POPULAR);
-        mLoaderManager.initLoader(POPULAR_LOADER_ID,popularBundle,this);
+        if (sortPreference == FAVORITE || sortPreference == HIGH_RATED) {
+            mLoaderManager.initLoader(POPULAR_LOADER_ID, popularBundle, this);
+        }
 
-        mLoader = mLoaderManager.getLoader(HIGHEST_RATED_LOADER_ID);
+        mHighestRatedLoader = mLoaderManager.getLoader(HIGHEST_RATED_LOADER_ID);
         highRatedBundle.putString(SEARCH_PREFERENCE, HIGH_RATED);
+
+        mFavoritesLoader = mLoaderManager.getLoader(FAVORITES_LOADER_ID);
+        favoritesBundle.putString(SEARCH_PREFERENCE, FAVORITE);
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        switch (sortPreference){
+        switch (sortPreference) {
             case FAVORITE:
-                loadFavoritesFromDatabase();
+                mLoaderManager.restartLoader(FAVORITES_LOADER_ID, favoritesBundle, this);
+
                 break;
             case HIGH_RATED:
                 showProgressBar();
-                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID,highRatedBundle,this);
+                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
                 break;
             case MOST_POPULAR:
                 showProgressBar();
-                mLoaderManager.restartLoader(POPULAR_LOADER_ID,popularBundle,this);
+                mLoaderManager.restartLoader(POPULAR_LOADER_ID, popularBundle, this);
                 break;
         }
     }
@@ -180,17 +191,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             case R.id.action_sort_by_popular:
                 sortPreference = MOST_POPULAR;
                 mMovieAdapter.setMovieData(preferences.mPopularMovies);
-                mLoaderManager.restartLoader(POPULAR_LOADER_ID,popularBundle,this);
+                mLoaderManager.restartLoader(POPULAR_LOADER_ID, popularBundle, this);
                 getSupportActionBar().setTitle(R.string.popular);
                 break;
             case R.id.action_sort_by_highest_rated:
                 sortPreference = HIGH_RATED;
-                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID,highRatedBundle,this);
+                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
                 getSupportActionBar().setTitle(R.string.highest_rated);
                 break;
             case R.id.action_show_favorites:
                 sortPreference = FAVORITE;
-                loadFavoritesFromDatabase();
+                mLoaderManager.restartLoader(FAVORITES_LOADER_ID, favoritesBundle, this);
                 getSupportActionBar().setTitle(R.string.favorite);
                 break;
         }
@@ -201,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * this method takes the content from the favorites database and sends it to the adapter
      */
     private void loadFavoritesFromDatabase() {
-            mMovieTagObjects.clear();
-        Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,null,null,null,null);
-        while (cursor.moveToNext()){
+        mMovieTagObjects.clear();
+        Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI, null, null, null, null);
+        while (cursor.moveToNext()) {
             String id = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
             String title = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME));
             String overview = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW));
@@ -212,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             String voterAverage = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
             byte[] byteArray = cursor.getBlob(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB));
 
-            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate,voterAverage, byteArray));
+            mMovieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate, voterAverage, byteArray));
         }
         cursor.close();
         mMovieAdapter.setMovieData(mMovieTagObjects);
@@ -237,12 +248,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             protected void onStartLoading() {
                 showProgressBar();
                 if (!preferences.mPopularMovies.isEmpty() && sortPreference == MOST_POPULAR) {
-                    Log.v("main activity ", "net request saved");
                     deliverResult(preferences.mPopularMovies);
-                }else  if (!preferences.mHighestRatedMovies.isEmpty() && sortPreference == HIGH_RATED) {
-                    Log.v("main activity ", "net request saved");
+                } else if (!preferences.mHighestRatedMovies.isEmpty() && sortPreference == HIGH_RATED) {
                     deliverResult(preferences.mHighestRatedMovies);
-                }else {
+                } else {
                     forceLoad();
                 }
             }
@@ -255,16 +264,38 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 }
 
                 String searchBy = args.getString(SEARCH_PREFERENCE);
-                URL movieUrl = NetworkUtils.buildUrl(searchBy);
+                if (searchBy != FAVORITE) {
+                    URL movieUrl = NetworkUtils.buildUrl(searchBy);
 
-                try {
-                    String response = NetworkUtils.getResponseFromHttpUrl(movieUrl);
-                    movieTagObjects = MovieDBJsonUtils.translateMoviesDBJSONToArrayList(response);
+                    try {
+                        String response = NetworkUtils.getResponseFromHttpUrl(movieUrl);
+                        movieTagObjects = MovieDBJsonUtils.translateMoviesDBJSONToArrayList(response);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                     return movieTagObjects;
+                } else {
+                    Cursor cursor = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+                    while (cursor.moveToNext()){
+                        String id = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
+                        String title = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_NAME));
+                        String overview = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_OVERVIEW));
+                        String imagePath = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_IMAGE_PATH));
+                        String releaseDate = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
+                        String voterAverage = cursor.getString(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_VOTER_AVERAGE));
+                        byte[] byteArray = cursor.getBlob(cursor.getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB));
+
+                        movieTagObjects.add(new MovieTagObject(id, title, overview, imagePath, releaseDate, voterAverage, byteArray));
+                    }
+
+                    cursor.close();
+                    return movieTagObjects;
+                }
 
 
             }
@@ -273,15 +304,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieTagObject>> loader, ArrayList<MovieTagObject> data) {
-        if (data == null){
+        if (data == null) {
             showErrorScreen();
-        }else if (loader.getId() == POPULAR_LOADER_ID){
+        } else if (loader.getId() == POPULAR_LOADER_ID) {
             preferences.mPopularMovies = data;
-        }else if (loader.getId() == HIGHEST_RATED_LOADER_ID){
+            if (sortPreference == MOST_POPULAR){
+                mMovieAdapter.setMovieData(mPopularMovies);
+            }
+        } else if (loader.getId() == HIGHEST_RATED_LOADER_ID) {
             preferences.mHighestRatedMovies = data;
-        }
+            if (sortPreference == HIGH_RATED){
+                mMovieAdapter.setMovieData(mHighestRatedMovies);
+            }
+        }else if (sortPreference == FAVORITE){
             mMovieAdapter.setMovieData(data);
-            showRecyclerView();
+        }
+
+        showRecyclerView();
 
     }
 
