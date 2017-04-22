@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView mRecyclerView;
     private TextView mErrorScreen;
+    private TextView mNoFavoritesScreen;
     private ProgressBar mProgressBar;
     private MovieAdapter mMovieAdapter;
     private int spanCount = 2;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 , GridLayoutManager.VERTICAL, false);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorScreen = (TextView) findViewById(R.id.tv_error_message);
+        mNoFavoritesScreen = (TextView) findViewById(R.id.tv_no_favorites_message);
         mProgressBar = (ProgressBar) findViewById(R.id.pb_loading);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setHasFixedSize(false);
@@ -151,20 +153,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mProgressBar.setVisibility(View.VISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorScreen.setVisibility(View.INVISIBLE);
+        mNoFavoritesScreen.setVisibility(View.INVISIBLE);
     }
 
     private final void showErrorScreen() {
         mErrorScreen.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.INVISIBLE);
+        mNoFavoritesScreen.setVisibility(View.INVISIBLE);
     }
 
     private final void showRecyclerView() {
         mRecyclerView.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.INVISIBLE);
         mErrorScreen.setVisibility(View.INVISIBLE);
+        mNoFavoritesScreen.setVisibility(View.INVISIBLE);
     }
 
+    private final void showNoFavoritesView() {
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.INVISIBLE);
+        mErrorScreen.setVisibility(View.INVISIBLE);
+        mNoFavoritesScreen.setVisibility(View.VISIBLE);
+    }
     /**
      * inflate options menu with the options for sorting by popularity or ranking
      *
@@ -282,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public void onLoadFinished(Loader<ArrayList<MovieTagObject>> loader, ArrayList<MovieTagObject> data) {
-        if (!data.isEmpty()) {
+        if (!data.isEmpty() || data == null) {
             if (loader.getId() == POPULAR_LOADER_ID) {
                 preferences.mPopularMovies = data;
                 if (sortPreference == MOST_POPULAR) {
@@ -304,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }else if (sortPreference == HIGH_RATED && loader.getId() == HIGHEST_RATED_LOADER_ID){
             showErrorScreen();
         }else if (sortPreference == FAVORITE && loader.getId() == FAVORITES_LOADER_ID){
-            showErrorScreen();
+            showNoFavoritesView();
         }
 
     }

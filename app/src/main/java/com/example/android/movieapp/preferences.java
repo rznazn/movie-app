@@ -11,6 +11,5 @@ public class preferences {
     public static String sortPreference = "popular";
     public static ArrayList<MovieTagObject> mPopularMovies = new ArrayList<>();
     public static ArrayList<MovieTagObject> mHighestRatedMovies = new ArrayList<>();
-    public static ArrayList<MovieTagObject> mFavoriteMovies = new ArrayList<>();
 
 }

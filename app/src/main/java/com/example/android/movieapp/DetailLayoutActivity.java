@@ -272,7 +272,8 @@ public class DetailLayoutActivity extends AppCompatActivity {
             new GetMoviesReviewsTask().execute(movieId);
 
         } else {
-            MovieReview noReviewWithNoNet = new MovieReview("No Internet", "Means no reviews can be loaded");
+            MovieReview noReviewWithNoNet = new MovieReview(getString(R.string.no_internet),
+                    getString(R.string.no_reviews));
             mMovieReviews.add(noReviewWithNoNet);
             movieReviewRecyclerViewAdapter.setmMovieReviews(mMovieReviews);
         }

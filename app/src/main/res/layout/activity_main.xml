@@ -23,6 +23,16 @@
         android:textSize="22sp"
         android:text="@string/error_message"/>
 
+    <TextView
+        android:id="@+id/tv_no_favorites_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:textSize="22sp"
+        android:text="@string/no_favorites"/>
+
     <ProgressBar
         android:id="@+id/pb_loading"
         android:layout_width="42dp"

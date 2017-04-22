@@ -19,6 +19,7 @@
     <string name="popular">popular</string>
     <string name="reviews">Reviews:</string>
     <string name="no_reviews">No reviews available.</string>
-    <string name="no_review">No review available</string>
     <string name="poster_image">poster image</string>
+    <string name="no_internet">no internet</string>
+    <string name="no_favorites">You do not have any favorites selected</string>
 </resources>
