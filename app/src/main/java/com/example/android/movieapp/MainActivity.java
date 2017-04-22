@@ -137,11 +137,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 break;
             case HIGH_RATED:
                 showProgressBar();
-                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
+                mLoaderManager.initLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
                 break;
             case MOST_POPULAR:
                 showProgressBar();
-                mLoaderManager.restartLoader(POPULAR_LOADER_ID, popularBundle, this);
+                mLoaderManager.initLoader(POPULAR_LOADER_ID, popularBundle, this);
                 break;
         }
     }
@@ -201,13 +201,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (itemSelected) {
             case R.id.action_sort_by_popular:
                 sortPreference = MOST_POPULAR;
-                mMovieAdapter.setMovieData(preferences.mPopularMovies);
-                mLoaderManager.restartLoader(POPULAR_LOADER_ID, popularBundle, this);
+                showProgressBar();
+                mLoaderManager.initLoader(POPULAR_LOADER_ID, popularBundle, this);
                 getSupportActionBar().setTitle(R.string.popular);
                 break;
             case R.id.action_sort_by_highest_rated:
                 sortPreference = HIGH_RATED;
-                mLoaderManager.restartLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
+                showProgressBar();
+                mLoaderManager.initLoader(HIGHEST_RATED_LOADER_ID, highRatedBundle, this);
                 getSupportActionBar().setTitle(R.string.highest_rated);
                 break;
             case R.id.action_show_favorites:
