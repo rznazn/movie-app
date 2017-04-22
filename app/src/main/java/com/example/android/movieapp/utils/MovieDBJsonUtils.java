@@ -3,13 +3,10 @@ package com.example.android.movieapp.utils;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.widget.ImageView;
 
 import com.example.android.movieapp.MovieReview;
 import com.example.android.movieapp.MovieTagObject;
 import com.example.android.movieapp.R;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,17 +97,6 @@ public class MovieDBJsonUtils {
                     return null;
                 }
 
-    }
-
-    /**
-     * @param view ImageView that the image should be assigned to, this allows the desired image to
-     *             be passed in with all other values assigned to it.
-     * @param uri
-     * @return the same Image View as was passed in except loaded with the image from the Uri
-     */
-    public static ImageView loadImageFromJson(ImageView view, Uri uri){
-        Picasso.with(view.getContext()).load(uri).into(view);
-        return view;
     }
 
     /**
