@@ -10,9 +10,8 @@
         android:src="@drawable/ic_done_black_24dp"/>
     <TextView
         android:id="@+id/tv_grid_item"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        style="@style/TextViewStyle2"
+        android:layout_gravity="center"
         android:maxLines="2"
         android:text="movieTitle"/>
 
