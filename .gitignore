@@ -8,3 +8,5 @@
 /captures
 .externalNativeBuild
 app/src/main/java/com/example/android/movieapp/utils/ApiKey.java
+
+app/src/main/java/com/example/android/movieapp/ApiKey.java
