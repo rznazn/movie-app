@@ -140,6 +140,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         }
         mID = mCurrentMovie.getId();
         mTitle = mCurrentMovie.getTitle();
+        getSupportActionBar().setTitle(mTitle);
         mOverview = mCurrentMovie.getOverview();
         mImagePath = mCurrentMovie.getImagePath();
         mVoterAverage = mCurrentMovie.getVoterAverage();
