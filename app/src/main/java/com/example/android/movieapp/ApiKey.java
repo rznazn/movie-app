@@ -1,4 +1,4 @@
-package com.example.android.movieapp.utils;
+package com.example.android.movieapp;
 
 /**
  * Created by sport on 3/13/2017.

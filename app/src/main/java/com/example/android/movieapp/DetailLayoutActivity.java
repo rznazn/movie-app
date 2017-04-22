@@ -21,7 +21,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.movieapp.data.favoritesContract;
-import com.example.android.movieapp.utils.ApiKey;
 import com.example.android.movieapp.utils.MovieDBJsonUtils;
 import com.example.android.movieapp.utils.MovieReviewRecyclerViewAdapter;
 import com.example.android.movieapp.utils.NetworkUtils;
