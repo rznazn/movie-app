@@ -86,7 +86,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         playTrailerIV = (ImageView) findViewById(R.id.play_trailer);
         favoriteIV = (ImageView) findViewById(R.id.favorite);
         detailTV = (TextView) findViewById(R.id.tv_movie_detail);
-        releaseDateTV = (TextView)findViewById(R.id.release_date);
+        releaseDateTV = (TextView) findViewById(R.id.release_date);
         voterAverageTV = (TextView) findViewById(R.id.voter_average);
         scrollViewHeaderTV = (TextView) findViewById(R.id.scrollview_header);
         reviewsIV = (ImageView) findViewById(R.id.reviews);
@@ -96,7 +96,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
         /**
          * instate the recyclerVIew and set layoutManager and custom adapter
          */
-        LinearLayoutManager manager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         reviewsRV.setLayoutManager(manager);
         movieReviewRecyclerViewAdapter = new MovieReviewRecyclerViewAdapter();
         reviewsRV.setAdapter(movieReviewRecyclerViewAdapter);
@@ -109,18 +109,18 @@ public class DetailLayoutActivity extends AppCompatActivity {
         Bundle intentBundle = intent.getExtras();
         int movieArrayId = intentBundle.getInt("id");
         int movieID = intentBundle.getInt("movieId");
-        if (preferences.sortPreference == MainActivity.HIGH_RATED){
+        if (preferences.sortPreference == MainActivity.HIGH_RATED) {
             mCurrentMovie = preferences.mHighestRatedMovies.get(movieArrayId);
-        }else if (preferences.sortPreference == MainActivity.MOST_POPULAR){
+        } else if (preferences.sortPreference == MainActivity.MOST_POPULAR) {
             mCurrentMovie = preferences.mPopularMovies.get(movieArrayId);
-        }else if (preferences.sortPreference == MainActivity.FAVORITE){
+        } else if (preferences.sortPreference == MainActivity.FAVORITE) {
             String[] args = {String.valueOf(movieID)};
             Cursor currentMovieCursur = getContentResolver().query(favoritesContract.favoritesEntry.CONTENT_URI,
                     null,
                     favoritesContract.favoritesEntry.COLUMN_MOVIE_ID,
                     args,
                     null);
-            if(currentMovieCursur.moveToFirst()){
+            if (currentMovieCursur.moveToFirst()) {
                 String id = currentMovieCursur.getString(currentMovieCursur.
                         getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_ID));
                 String title = currentMovieCursur.getString(currentMovieCursur.
@@ -135,7 +135,7 @@ public class DetailLayoutActivity extends AppCompatActivity {
                         getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_RELEASE_DATE));
                 byte[] posterImage = currentMovieCursur.getBlob(currentMovieCursur.
                         getColumnIndex(favoritesContract.favoritesEntry.COLUMN_MOVIE_POSTER_BLOB));
-                mCurrentMovie = new MovieTagObject(id,title,overview,posterPath,releaseDate,voterAverage,posterImage);
+                mCurrentMovie = new MovieTagObject(id, title, overview, posterPath, releaseDate, voterAverage, posterImage);
             }
         }
         mID = mCurrentMovie.getId();
@@ -153,6 +153,10 @@ public class DetailLayoutActivity extends AppCompatActivity {
          * get and stage the path for the youtube trailer
          */
         callGetYoutubePathAsyncTask(mID);
+        /**
+         * get the movie's reviews and stage in recyclerVIew
+         */
+        callGetReviewsAsyncTask(mID);
 
         /**
          * load poster to background
@@ -162,10 +166,6 @@ public class DetailLayoutActivity extends AppCompatActivity {
                 0,
                 mPoster.length);
         posterIV.setImageBitmap(posterBitmap);
-        /**
-         * get the movie's reviews and stage in recyclerVIew
-         */
-        new GetMoviesReviewsTask().execute(mID);
 
         detailTV.setText(mOverview);
         showPlot();
@@ -256,6 +256,25 @@ public class DetailLayoutActivity extends AppCompatActivity {
         if (netInfo != null && netInfo.isConnected()){
             new GetYoutubePath().execute(movieId);
 
+        }
+    }
+
+    /**
+     * check connectivity and adjust visible view prior to starting the async task
+     * show error screen if there is no connectivity
+     */
+    private void callGetReviewsAsyncTask(String movieId){
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()){
+            new GetMoviesReviewsTask().execute(movieId);
+
+        } else {
+            MovieReview noReviewWithNoNet = new MovieReview("No Internet", "Means no reviews can be loaded");
+            mMovieReviews.add(noReviewWithNoNet);
+            movieReviewRecyclerViewAdapter.setmMovieReviews(mMovieReviews);
         }
     }
 
